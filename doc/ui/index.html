@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>UI 原型索引 · Agamemnon</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  body {
+    overflow-y: auto;
+  }
+  .index-page {
+    min-height: 100vh;
+    padding: 64px 48px;
+    background: var(--bg-base);
+  }
+
+  .index-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .index-label {
+    font-size: 11px;
+    letter-spacing: 0.6em;
+    color: var(--accent-gold);
+    margin-bottom: 14px;
+  }
+  .index-title {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    font-weight: 200;
+    letter-spacing: 0.3em;
+    margin-bottom: 8px;
+  }
+  .index-subtitle {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.3em;
+  }
+
+  .index-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .index-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--dur-base) var(--ease);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .index-card:hover {
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+  }
+
+  .card-preview {
+    aspect-ratio: 16 / 10;
+    background: var(--bg-base);
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-preview .iframe-wrap {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1920px;
+    height: 1200px;
+    transform: scale(0.2);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+  .card-preview iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .card-info {
+    padding: 20px 24px;
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .card-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-gold);
+    letter-spacing: 0.2em;
+  }
+  .card-stage {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.2em;
+  }
+  .card-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    letter-spacing: 0.15em;
+    margin-bottom: 6px;
+  }
+  .card-en {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.3em;
+    margin-bottom: 12px;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .footnote {
+    text-align: center;
+    margin-top: 64px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+</style>
+</head>
+<body>
+
+<div class="index-page noise">
+
+  <div class="index-header">
+    <div class="index-label">UI PROTOTYPE · v0.1</div>
+    <h1 class="index-title">界 面 原 型 集</h1>
+    <div class="index-subtitle">AGAMEMNON · 竞 拍 之 王</div>
+  </div>
+
+  <div class="index-grid">
+
+    <a class="index-card" href="01_main_menu.html">
+      <div class="card-preview">
+        <div class="iframe-wrap"><iframe src="01_main_menu.html" scrolling="no"></iframe></div>
+      </div>
+      <div class="card-info">
+        <div class="card-head">
+          <span class="card-num">01</span>
+          <span class="card-stage">ENTRY</span>
+        </div>
+        <div class="card-title">主 菜 单</div>
+        <div class="card-en">MAIN MENU</div>
+        <div class="card-desc">游戏启动后的首屏，包含品牌、菜单列表、玩家信息、服务器状态。</div>
+      </div>
+    </a>
+
+    <a class="index-card" href="02_lobby.html">
+      <div class="card-preview">
+        <div class="iframe-wrap"><iframe src="02_lobby.html" scrolling="no"></iframe></div>
+      </div>
+      <div class="card-info">
+        <div class="card-head">
+          <span class="card-num">02</span>
+          <span class="card-stage">LOBBY</span>
+        </div>
+        <div class="card-title">大 厅 · 组 队</div>
+        <div class="card-en">LOBBY · MATCHMAKING</div>
+        <div class="card-desc">模式选择、四人坐席、规则说明、动态信息流。</div>
+      </div>
+    </a>
+
+    <a class="index-card" href="03_hero_select.html">
+      <div class="card-preview">
+        <div class="iframe-wrap"><iframe src="03_hero_select.html" scrolling="no"></iframe></div>
+      </div>
+      <div class="card-info">
+        <div class="card-head">
+          <span class="card-num">03</span>
+          <span class="card-stage">SELECTION</span>
+        </div>
+        <div class="card-title">英 雄 选 择</div>
+        <div class="card-en">HERO SELECTION</div>
+        <div class="card-desc">6 位英雄、技能详情、风格标签、入场倒计时。</div>
+      </div>
+    </a>
+
+    <a class="index-card" href="04_auction_reveal.html">
+      <div class="card-preview">
+        <div class="iframe-wrap"><iframe src="04_auction_reveal.html" scrolling="no"></iframe></div>
+      </div>
+      <div class="card-info">
+        <div class="card-head">
+          <span class="card-num">04</span>
+          <span class="card-stage">IN-GAME</span>
+        </div>
+        <div class="card-title">拍 卖 房 · 揭 露</div>
+        <div class="card-en">AUCTION · REVEAL PHASE</div>
+        <div class="card-desc">核心界面：仓库面板 + 英雄技能 + 估值辅助。支持悬浮 tooltip。</div>
+      </div>
+    </a>
+
+    <a class="index-card" href="05_auction_bid.html">
+      <div class="card-preview">
+        <div class="iframe-wrap"><iframe src="05_auction_bid.html" scrolling="no"></iframe></div>
+      </div>
+      <div class="card-info">
+        <div class="card-head">
+          <span class="card-num">05</span>
+          <span class="card-stage">IN-GAME</span>
+        </div>
+        <div class="card-title">密 封 出 价</div>
+        <div class="card-en">SEALED BID</div>
+        <div class="card-desc">出价面板弹出、玩家状态显示、规则提示与决策辅助。</div>
+      </div>
+    </a>
+
+    <a class="index-card" href="06_settlement.html">
+      <div class="card-preview">
+        <div class="iframe-wrap"><iframe src="06_settlement.html" scrolling="no"></iframe></div>
+      </div>
+      <div class="card-info">
+        <div class="card-head">
+          <span class="card-num">06</span>
+          <span class="card-stage">END</span>
+        </div>
+        <div class="card-title">结 算</div>
+        <div class="card-en">SETTLEMENT</div>
+        <div class="card-desc">真实价值公布、出价排行、排位变动、藏品统计、评语。</div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="footnote">
+    建 议 以 1920 × 1080 分 辨 率 全 屏 预 览<br>
+    设 计 风 格 ·  深 灰 × 米 白 × 暖 金
+  </div>
+
+</div>
+
+</body>
+</html>

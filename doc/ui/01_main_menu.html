@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Agamemnon · 竞拍之王</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* ========== 主菜单专属样式 ========== */
+  .menu-stage {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at top, rgba(201,169,97,0.04), transparent 60%),
+      radial-gradient(ellipse at bottom, rgba(176,119,112,0.03), transparent 60%),
+      var(--bg-base);
+  }
+
+  /* 背景大字（若隐若现） */
+  .bg-hero-char {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-serif);
+    font-size: 780px;
+    color: rgba(232, 230, 225, 0.015);
+    pointer-events: none;
+    letter-spacing: -0.1em;
+    font-weight: 100;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  /* 顶部栏 */
+  .top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+  .top-bar .brand-small {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    color: var(--text-secondary);
+  }
+  .top-bar .brand-small::before {
+    content: "◆";
+    margin-right: 12px;
+    color: var(--accent-gold);
+    font-size: 8px;
+    vertical-align: middle;
+  }
+  .top-bar .meta {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+
+  /* 中央主区域 */
+  .menu-main {
+    position: absolute;
+    left: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    max-width: 640px;
+  }
+
+  .menu-suptitle {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    letter-spacing: 0.6em;
+    color: var(--accent-gold);
+    margin-bottom: 24px;
+  }
+  .menu-suptitle::after {
+    content: "";
+    display: inline-block;
+    width: 48px;
+    height: 1px;
+    background: var(--accent-gold);
+    vertical-align: middle;
+    margin-left: 16px;
+    opacity: 0.6;
+  }
+
+  .menu-title {
+    font-family: var(--font-serif);
+    font-size: 96px;
+    font-weight: 200;
+    line-height: 1;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .menu-subtitle {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    letter-spacing: 0.5em;
+    color: var(--text-secondary);
+    margin-bottom: 64px;
+    font-weight: 300;
+  }
+
+  .menu-tagline {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--text-tertiary);
+    max-width: 400px;
+    margin-bottom: 72px;
+    line-height: 2;
+  }
+
+  /* 菜单列表 */
+  .menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 20px 14px 0;
+    cursor: pointer;
+    transition: all var(--dur-base) var(--ease);
+    position: relative;
+    border-left: 1px solid transparent;
+    padding-left: 20px;
+  }
+
+  .menu-item:hover {
+    border-left-color: var(--accent-gold);
+    padding-left: 32px;
+    background: linear-gradient(90deg, rgba(201,169,97,0.05), transparent 60%);
+  }
+
+  .menu-item .idx {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    min-width: 30px;
+  }
+
+  .menu-item .label {
+    font-size: 18px;
+    letter-spacing: 0.15em;
+    color: var(--text-primary);
+    font-family: var(--font-serif);
+    font-weight: 300;
+  }
+
+  .menu-item:hover .label {
+    color: var(--accent-gold);
+  }
+
+  .menu-item .hint {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-left: auto;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease);
+  }
+
+  .menu-item:hover .hint {
+    opacity: 1;
+  }
+
+  .menu-item.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .menu-item.disabled:hover {
+    border-left-color: transparent;
+    padding-left: 20px;
+    background: transparent;
+  }
+
+  /* 右下角玩家信息 */
+  .player-card {
+    position: absolute;
+    bottom: 48px;
+    right: 48px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    min-width: 280px;
+  }
+
+  .player-avatar {
+    width: 48px;
+    height: 48px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--accent-gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--accent-gold);
+  }
+
+  .player-info .name {
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .player-info .rank {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+
+  .player-info .rank .num {
+    color: var(--accent-gold);
+    margin: 0 6px;
+  }
+
+  /* 右侧版本/状态信息 */
+  .side-info {
+    position: absolute;
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.15em;
+    line-height: 2.2;
+    z-index: 5;
+  }
+
+  .side-info .line {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .side-info .line .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--success);
+  }
+
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.2em;
+    z-index: 10;
+  }
+
+  .bottom-bar .shortcuts {
+    display: flex;
+    gap: 32px;
+  }
+
+  .bottom-bar .key {
+    display: inline-block;
+    border: 1px solid var(--border-medium);
+    padding: 2px 8px;
+    margin-right: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+
+  /* 时间显示 */
+  .clock {
+    font-family: var(--font-mono);
+    letter-spacing: 0.2em;
+  }
+</style>
+</head>
+<body>
+
+<div class="menu-stage noise">
+
+  <!-- 若隐若现的背景大字 -->
+  <div class="bg-hero-char">拍</div>
+
+  <!-- 顶部栏 -->
+  <div class="top-bar">
+    <div class="brand-small">AGAMEMNON · 竞拍之王</div>
+    <div class="meta">
+      <span>v 0.1.0 DEMO</span>
+      <span class="clock" id="clock">14:36:24</span>
+    </div>
+  </div>
+
+  <!-- 主菜单 -->
+  <div class="menu-main fade-in">
+    <div class="menu-suptitle">CHAPTER  I</div>
+    <h1 class="menu-title">竞拍之王</h1>
+    <div class="menu-subtitle">A G A M E M N O N</div>
+
+    <p class="menu-tagline">
+      估得准，才能赢。<br>
+      在信息与博弈之间，找到你自己的节奏。
+    </p>
+
+    <div class="menu-list">
+      <div class="menu-item">
+        <span class="idx">01</span>
+        <span class="label">快速匹配</span>
+        <span class="hint">4 人排位对战</span>
+      </div>
+      <div class="menu-item">
+        <span class="idx">02</span>
+        <span class="label">人机练习</span>
+        <span class="hint">1 人 · 3 AI</span>
+      </div>
+      <div class="menu-item">
+        <span class="idx">03</span>
+        <span class="label">自定义房间</span>
+        <span class="hint">与好友同乐</span>
+      </div>
+      <div class="menu-item">
+        <span class="idx">04</span>
+        <span class="label">英雄图鉴</span>
+        <span class="hint">查阅 · 鉴赏</span>
+      </div>
+      <div class="menu-item">
+        <span class="idx">05</span>
+        <span class="label">赛季战绩</span>
+        <span class="hint">历史 · 荣誉</span>
+      </div>
+      <div class="menu-item">
+        <span class="idx">06</span>
+        <span class="label">设置</span>
+        <span class="hint">个性调整</span>
+      </div>
+      <div class="menu-item">
+        <span class="idx">07</span>
+        <span class="label">退出</span>
+        <span class="hint">离席</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧辅助信息 -->
+  <div class="side-info">
+    <div class="line">
+      <span>东亚服 · 延迟 28 ms</span>
+      <span class="dot"></span>
+    </div>
+    <div class="line" style="color: var(--text-secondary);">当前赛季 · 古董珍玩</div>
+    <div class="line">距赛季结束 68 日</div>
+  </div>
+
+  <!-- 右下角玩家卡片 -->
+  <div class="player-card">
+    <div class="player-avatar">圣</div>
+    <div class="player-info">
+      <div class="name">林圣杰</div>
+      <div class="rank">
+        白银 IV<span class="num">1456</span>分
+      </div>
+    </div>
+    <div style="margin-left:auto; font-size:10px; color: var(--text-tertiary); letter-spacing: 0.1em;">
+      在线
+    </div>
+  </div>
+
+  <!-- 底部栏 -->
+  <div class="bottom-bar">
+    <div class="shortcuts">
+      <span><span class="key">↑ ↓</span>选择</span>
+      <span><span class="key">Enter</span>确认</span>
+      <span><span class="key">ESC</span>退出</span>
+    </div>
+    <div>WARM  ·  WISE  ·  WAGER</div>
+  </div>
+</div>
+
+<script>
+  // 时钟
+  function updateClock() {
+    const d = new Date();
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    const s = String(d.getSeconds()).padStart(2, '0');
+    document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // 菜单交互
+  document.querySelectorAll('.menu-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const label = item.querySelector('.label').textContent;
+      if (label === '人机练习') location.href = '02_lobby.html';
+      else if (label === '快速匹配') location.href = '02_lobby.html';
+    });
+  });
+</script>
+
+</body>
+</html>

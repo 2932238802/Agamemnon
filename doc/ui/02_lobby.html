@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>大厅 · Agamemnon</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .lobby-stage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-base);
+    overflow: hidden;
+  }
+
+  /* 顶部栏 */
+  .lobby-top {
+    height: 60px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .lobby-top .nav {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .lobby-top .brand-small {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: var(--text-secondary);
+  }
+  .lobby-top .brand-small::before {
+    content: "◆";
+    margin-right: 10px;
+    color: var(--accent-gold);
+    font-size: 8px;
+  }
+  .nav-tab {
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 6px 0;
+    border-bottom: 1px solid transparent;
+    transition: all var(--dur-base) var(--ease);
+  }
+  .nav-tab:hover {
+    color: var(--text-secondary);
+  }
+  .nav-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-gold);
+  }
+
+  .lobby-top .right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .lobby-top .avatar-mini {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--accent-gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--accent-gold);
+  }
+
+  /* 主体：三栏布局 */
+  .lobby-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  /* 左侧：模式选择 */
+  .left-panel {
+    border-right: 1px solid var(--border-light);
+    padding: 32px 24px;
+    overflow-y: auto;
+  }
+  .panel-label {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+    margin-bottom: 20px;
+    font-family: var(--font-serif);
+  }
+  .mode-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mode-item {
+    padding: 16px 18px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--dur-base) var(--ease);
+  }
+  .mode-item:hover {
+    background: rgba(255,255,255,0.02);
+    border-color: var(--border-light);
+  }
+  .mode-item.active {
+    background: rgba(201,169,97,0.06);
+    border-color: var(--accent-gold-dim);
+  }
+  .mode-item .mode-name {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .mode-item .mode-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+  .mode-item.active .mode-name {
+    color: var(--accent-gold);
+  }
+
+  .section-gap {
+    height: 32px;
+  }
+
+  /* 中央：房间信息 */
+  .center-panel {
+    padding: 48px 64px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 48px;
+  }
+  .room-title {
+    font-family: var(--font-serif);
+    font-size: 42px;
+    font-weight: 200;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .room-subtitle {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.3em;
+  }
+  .room-status {
+    text-align: right;
+  }
+  .room-status .status-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.2em;
+    margin-bottom: 6px;
+  }
+  .room-status .status-value {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    color: var(--accent-gold);
+    letter-spacing: 0.1em;
+  }
+  .room-status .status-value .pulse {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    margin-right: 10px;
+    animation: pulse 1.6s infinite;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* 4 人位 */
+  .seat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .seat {
+    aspect-ratio: 3 / 4;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all var(--dur-base) var(--ease);
+  }
+  .seat.you {
+    border-color: var(--accent-gold);
+    background: linear-gradient(180deg, rgba(201,169,97,0.08), var(--bg-surface) 60%);
+  }
+  .seat.ai {
+    border-style: dashed;
+  }
+
+  .seat-idx {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.2em;
+  }
+  .seat-avatar {
+    width: 64px;
+    height: 64px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-medium);
+    margin: 24px auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 28px;
+    color: var(--text-secondary);
+  }
+  .seat.you .seat-avatar {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+  }
+  .seat-name {
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    margin-bottom: 6px;
+    font-family: var(--font-serif);
+  }
+  .seat-rank {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+  .seat-ready {
+    margin-top: auto;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-light);
+  }
+  .seat-ready.ready {
+    color: var(--success);
+  }
+  .seat-ready.waiting {
+    color: var(--text-tertiary);
+  }
+
+  .empty-slot {
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    margin: auto 0;
+  }
+  .empty-slot .plus {
+    font-size: 32px;
+    font-weight: 100;
+    margin-bottom: 8px;
+  }
+
+  /* 规则介绍 */
+  .rules-box {
+    background: var(--bg-surface);
+    border-left: 2px solid var(--accent-gold-dim);
+    padding: 24px 28px;
+    margin-bottom: 32px;
+  }
+  .rules-box h4 {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+    color: var(--accent-gold);
+    font-weight: 400;
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .rule-item .rv {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .rule-item .rl {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+
+  /* 底部行动栏 */
+  .action-bar {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tip-text {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+
+  /* 右侧：聊天/社区 */
+  .right-panel {
+    border-left: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .right-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .right-tab {
+    flex: 1;
+    padding: 16px 0;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all var(--dur-base) var(--ease);
+    border-bottom: 1px solid transparent;
+    font-family: var(--font-serif);
+  }
+  .right-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-gold);
+  }
+
+  .activity-list {
+    flex: 1;
+    padding: 20px 24px;
+    overflow-y: auto;
+  }
+  .activity-item {
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--border-light);
+  }
+  .activity-item:last-child {
+    border-bottom: none;
+  }
+  .activity-item .time {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.15em;
+    margin-bottom: 4px;
+  }
+  .activity-item .msg {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .activity-item .msg .name {
+    color: var(--accent-gold);
+    font-family: var(--font-serif);
+    letter-spacing: 0.05em;
+  }
+  .activity-item .msg .gain {
+    color: var(--success);
+    font-family: var(--font-mono);
+  }
+  .activity-item .msg .loss {
+    color: var(--danger);
+    font-family: var(--font-mono);
+  }
+</style>
+</head>
+<body>
+
+<div class="lobby-stage noise">
+
+  <!-- 顶部栏 -->
+  <div class="lobby-top">
+    <div class="nav">
+      <div class="brand-small">AGAMEMNON</div>
+      <div class="nav-tab active">大厅</div>
+      <div class="nav-tab">英雄</div>
+      <div class="nav-tab">战绩</div>
+      <div class="nav-tab">商城</div>
+    </div>
+    <div class="right">
+      <span>白银 IV · <span class="num" style="color:var(--accent-gold);">1456</span> 分</span>
+      <div class="avatar-mini">圣</div>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="lobby-body">
+
+    <!-- 左侧 -->
+    <div class="left-panel">
+      <div class="panel-label">· 对战模式 ·</div>
+      <div class="mode-list">
+        <div class="mode-item active">
+          <div class="mode-name">人机练习</div>
+          <div class="mode-desc">1 玩家 · 3 AI · 不计分</div>
+        </div>
+        <div class="mode-item">
+          <div class="mode-name">快速匹配</div>
+          <div class="mode-desc">4 人排位 · 记录战绩</div>
+        </div>
+        <div class="mode-item">
+          <div class="mode-name">自定义</div>
+          <div class="mode-desc">邀请好友 · 自由规则</div>
+        </div>
+      </div>
+
+      <div class="section-gap"></div>
+      <div class="panel-label">· 难度选择 ·</div>
+      <div class="mode-list">
+        <div class="mode-item">
+          <div class="mode-name">新手</div>
+          <div class="mode-desc">推荐新玩家体验</div>
+        </div>
+        <div class="mode-item active">
+          <div class="mode-name">平衡</div>
+          <div class="mode-desc">1 新手 + 1 老将 + 1 困难</div>
+        </div>
+        <div class="mode-item">
+          <div class="mode-name">挑战</div>
+          <div class="mode-desc">3 名高段位 AI</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中央 -->
+    <div class="center-panel">
+      <div class="room-header">
+        <div>
+          <div class="room-title">拍卖序厅</div>
+          <div class="room-subtitle">AUCTION HALL · 9F · ROOM 034</div>
+        </div>
+        <div class="room-status">
+          <div class="status-label">房间状态</div>
+          <div class="status-value"><span class="pulse"></span>准备中</div>
+        </div>
+      </div>
+
+      <!-- 4 个位置 -->
+      <div class="seat-grid">
+        <div class="seat you">
+          <div class="seat-idx">SEAT · 01</div>
+          <div class="seat-avatar">圣</div>
+          <div class="seat-name">林圣杰</div>
+          <div class="seat-rank">白银 IV · 1456</div>
+          <div class="seat-ready ready">● 已就绪</div>
+        </div>
+        <div class="seat ai">
+          <div class="seat-idx">SEAT · 02</div>
+          <div class="seat-avatar">汤</div>
+          <div class="seat-name">新手 Tom</div>
+          <div class="seat-rank">AI · 新手</div>
+          <div class="seat-ready waiting">○ 等待开始</div>
+        </div>
+        <div class="seat ai">
+          <div class="seat-idx">SEAT · 03</div>
+          <div class="seat-avatar">博</div>
+          <div class="seat-name">老将 Bob</div>
+          <div class="seat-rank">AI · 老将</div>
+          <div class="seat-ready waiting">○ 等待开始</div>
+        </div>
+        <div class="seat ai">
+          <div class="seat-idx">SEAT · 04</div>
+          <div class="seat-avatar">卓</div>
+          <div class="seat-name">赌王 Alex</div>
+          <div class="seat-rank">AI · 困难</div>
+          <div class="seat-ready waiting">○ 等待开始</div>
+        </div>
+      </div>
+
+      <!-- 规则简介 -->
+      <div class="rules-box">
+        <h4>本局规则</h4>
+        <div class="rules-grid">
+          <div class="rule-item">
+            <div class="rv">10</div>
+            <div class="rl">最多回合</div>
+          </div>
+          <div class="rule-item">
+            <div class="rv">2.0→1.0</div>
+            <div class="rl">倍率递减</div>
+          </div>
+          <div class="rule-item">
+            <div class="rv">∞</div>
+            <div class="rl">金币无限</div>
+          </div>
+          <div class="rule-item">
+            <div class="rv">±30</div>
+            <div class="rl">单局最大分变</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 行动栏 -->
+      <div class="action-bar">
+        <div class="tip-text">提示：选择英雄后，进入仓库视野 · 回合中切勿中途退出</div>
+        <div style="display:flex; gap: 16px;">
+          <button class="btn btn-ghost">返回主菜单</button>
+          <button class="btn btn-primary btn-lg" onclick="location.href='03_hero_select.html'">进入 · 选择英雄</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧 -->
+    <div class="right-panel">
+      <div class="right-tabs">
+        <div class="right-tab active">动态</div>
+        <div class="right-tab">好友</div>
+        <div class="right-tab">公告</div>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="time">14 : 32</div>
+          <div class="msg"><span class="name">慕容九</span> 在一场极难对局中估值误差仅 <span class="gain">+0.8%</span></div>
+        </div>
+        <div class="activity-item">
+          <div class="time">14 : 20</div>
+          <div class="msg"><span class="name">楚怀瑾</span> 晋级至 <span style="color:var(--quality-yellow);">黄金 III</span></div>
+        </div>
+        <div class="activity-item">
+          <div class="time">14 : 12</div>
+          <div class="msg">服务器公告:新赛季将于 <span class="name">68 天后</span> 开启</div>
+        </div>
+        <div class="activity-item">
+          <div class="time">14 : 05</div>
+          <div class="msg"><span class="name">沈疏影</span> 以 <span class="gain">+12 分</span> 结束连败</div>
+        </div>
+        <div class="activity-item">
+          <div class="time">13 : 58</div>
+          <div class="msg">本周榜单第一:<span class="name">云归客</span> 平均偏差 <span class="gain">3.2%</span></div>
+        </div>
+        <div class="activity-item">
+          <div class="time">13 : 41</div>
+          <div class="msg"><span class="name">阮砚之</span> 在第 10 回合完成 <span class="gain">逆天捡漏</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

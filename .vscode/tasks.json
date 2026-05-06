@@ -1,0 +1,83 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Godot: 运行游戏",
+      "type": "process",
+      "command": "D:/LosAngelous/Godot4/Godot_v4.6.2-stable_win64.exe",
+      "args": [
+        "--path",
+        "${workspaceFolder}/Agamemnon/AgamemnonSrc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Godot: 运行当前场景",
+      "type": "process",
+      "command": "D:/LosAngelous/Godot4/Godot_v4.6.2-stable_win64.exe",
+      "args": [
+        "--path",
+        "${workspaceFolder}/Agamemnon/AgamemnonSrc",
+        "scenes/menu/main_menu.tscn"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Godot: 打开编辑器",
+      "type": "process",
+      "command": "D:/LosAngelous/Godot4/Godot_v4.6.2-stable_win64.exe",
+      "args": [
+        "--editor",
+        "--path",
+        "${workspaceFolder}/Agamemnon/AgamemnonSrc"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "日志: 打开日志文件夹",
+      "type": "shell",
+      "command": "explorer",
+      "args": [
+        "${env:APPDATA}\\Godot\\app_userdata\\Agamemnon"
+      ],
+      "presentation": {
+        "reveal": "silent",
+        "clear": false
+      }
+    },
+    {
+      "label": "日志: 用 VSCode 查看今天日志",
+      "type": "shell",
+      "command": "code",
+      "args": [
+        "${env:APPDATA}\\Godot\\app_userdata\\Agamemnon"
+      ],
+      "presentation": {
+        "reveal": "silent",
+        "clear": false
+      }
+    }
+  ]
+}

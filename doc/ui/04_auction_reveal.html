@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>拍卖房 · 揭露阶段</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .auction-stage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-base);
+    overflow: hidden;
+  }
+
+  /* 顶栏 */
+  .auction-top {
+    height: 64px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-surface);
+  }
+
+  .round-info {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .round-pill {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-medium);
+    background: var(--bg-base);
+  }
+  .round-pill .label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+  }
+  .round-pill .value {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--text-primary);
+    letter-spacing: 0.1em;
+  }
+  .round-pill .divider-inline {
+    color: var(--text-tertiary);
+    margin: 0 2px;
+  }
+  .round-pill .max {
+    color: var(--text-tertiary);
+    font-size: 13px;
+  }
+
+  .multiplier-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .multiplier-box .mlabel {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.3em;
+  }
+  .multiplier-box .mvalue {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    color: var(--accent-gold);
+    font-weight: 300;
+  }
+
+  .phase-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .phase-name {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    letter-spacing: 0.5em;
+    color: var(--text-primary);
+  }
+  .phase-name::before {
+    content: "◆";
+    font-size: 8px;
+    color: var(--accent-gold);
+    margin-right: 12px;
+    vertical-align: middle;
+  }
+  .phase-name::after {
+    content: "◆";
+    font-size: 8px;
+    color: var(--accent-gold);
+    margin-left: 12px;
+    vertical-align: middle;
+  }
+  .phase-hint {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.3em;
+  }
+
+  .top-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .countdown-linear {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    min-width: 180px;
+  }
+  .countdown-linear .cd-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .countdown-linear .cd-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-tertiary);
+  }
+  .countdown-linear .cd-num {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    color: var(--text-primary);
+    letter-spacing: 0.05em;
+  }
+  .countdown-linear .cd-num.warn {
+    color: var(--danger);
+  }
+  .countdown-linear .cd-bar {
+    width: 180px;
+    height: 2px;
+    background: var(--border-light);
+    position: relative;
+  }
+  .countdown-linear .cd-bar .fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 65%;
+    background: var(--accent-gold);
+    transition: width 1s linear;
+  }
+
+  /* 主体三栏 */
+  .auction-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 240px 1fr 300px;
+    overflow: hidden;
+  }
+
+  /* === 左栏：英雄 + 技能 + 已揭露统计 === */
+  .left-col {
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .hero-mini {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hero-mini-portrait {
+    width: 56px;
+    height: 56px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--accent-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 26px;
+    color: var(--accent-gold);
+    font-weight: 200;
+  }
+  .hero-mini-info .hm-name {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    letter-spacing: 0.2em;
+    margin-bottom: 4px;
+  }
+  .hero-mini-info .hm-title {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.3em;
+  }
+
+  .col-section {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .col-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+    margin-bottom: 14px;
+    font-family: var(--font-serif);
+  }
+
+  /* 技能卡 */
+  .skill-slot {
+    padding: 14px 14px;
+    border: 1px solid var(--border-medium);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all var(--dur-base) var(--ease);
+    background: var(--bg-surface);
+  }
+  .skill-slot:hover {
+    border-color: var(--accent-gold);
+  }
+  .skill-slot.ready {
+    border-color: var(--accent-gold-dim);
+  }
+  .skill-slot.cd {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .skill-slot .s-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .skill-slot .s-type {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-tertiary);
+  }
+  .skill-slot .s-cd {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-gold);
+  }
+  .skill-slot .s-cd.active {
+    color: var(--text-tertiary);
+  }
+  .skill-slot .s-name {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .skill-slot .s-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.6;
+  }
+
+  /* 揭露统计 */
+  .reveal-stat {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 16px;
+  }
+  .stat-item .sv {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .stat-item .sv .unit {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-left: 4px;
+  }
+  .stat-item .sl {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.15em;
+  }
+  .progress-row {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+  }
+  .progress-bar {
+    flex: 1;
+    height: 2px;
+    background: var(--border-light);
+    position: relative;
+  }
+  .progress-bar .pb-fill {
+    height: 100%;
+    background: var(--accent-gold);
+  }
+
+  /* 日志栏 */
+  .log-area {
+    flex: 1;
+    padding: 16px 20px;
+    overflow-y: auto;
+  }
+  .log-area .col-label {
+    position: sticky;
+    top: 0;
+    background: var(--bg-base);
+    padding-bottom: 8px;
+    margin: 0 -20px 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    z-index: 1;
+  }
+  .log-item {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border-light);
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  .log-item .t {
+    font-family: var(--font-mono);
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+  .log-item .msg {
+    color: var(--text-secondary);
+  }
+  .log-item .msg .hl { color: var(--accent-gold); }
+  .log-item .msg .num { color: var(--text-primary); }
+
+  /* === 中央：仓库面板 === */
+  .center-col {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .warehouse-head {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .wh-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .wh-title .wh-cn {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    letter-spacing: 0.3em;
+    color: var(--text-primary);
+  }
+  .wh-title .wh-en {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--text-tertiary);
+  }
+
+  .wh-legend {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-box {
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--border-medium);
+  }
+  .legend-box.unrevealed {
+    background: var(--bg-elevated);
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 4px);
+  }
+  .legend-box.existence { background: #3a3a3f; }
+  .legend-box.quality-sample {
+    background: var(--quality-purple);
+    opacity: 0.7;
+  }
+  .legend-box.full-sample {
+    background: linear-gradient(135deg, var(--quality-yellow), var(--accent-gold-dim));
+  }
+
+  /* 仓库主体 */
+  .warehouse-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px;
+    background:
+      radial-gradient(ellipse at center, rgba(201,169,97,0.02), transparent 70%),
+      var(--bg-base);
+  }
+
+  .warehouse-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 32px);
+    grid-auto-rows: 32px;
+    gap: 1px;
+    margin: 0 auto;
+    width: max-content;
+    background: var(--border-light);
+    padding: 1px;
+    border: 1px solid var(--border-medium);
+  }
+
+  .wh-cell {
+    background: var(--bg-elevated);
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 4px);
+    position: relative;
+    cursor: pointer;
+    transition: all var(--dur-fast) var(--ease);
+  }
+  .wh-cell:hover {
+    background-color: #33333a;
+    z-index: 2;
+    outline: 1px solid var(--accent-gold);
+  }
+
+  /* 物品格：大件物品跨多格 */
+  .wh-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    color: var(--text-primary);
+  }
+
+  /* L1 存在性 */
+  .wh-item.level-1 {
+    background-color: #3a3a40;
+    background-image: none;
+  }
+  .wh-item.level-1 .icon { opacity: 0; }
+
+  /* L2 类别（灰色图标） */
+  .wh-item.level-2 {
+    background-color: #3a3a40;
+    background-image: none;
+  }
+  .wh-item.level-2 .icon {
+    color: var(--text-tertiary);
+    font-size: 16px;
+  }
+
+  /* L3 品质（纯色） */
+  .wh-item.level-3.q-white  { background: var(--quality-white); }
+  .wh-item.level-3.q-green  { background: var(--quality-green); }
+  .wh-item.level-3.q-blue   { background: var(--quality-blue); }
+  .wh-item.level-3.q-purple { background: var(--quality-purple); }
+  .wh-item.level-3.q-yellow { background: var(--quality-yellow); }
+  .wh-item.level-3.q-red    { background: var(--quality-red); }
+  .wh-item.level-3 .icon { opacity: 0; }
+  .wh-item.level-3 {
+    background-image: none;
+    opacity: 0.55;
+  }
+
+  /* L4 全揭示 */
+  .wh-item.level-4 {
+    background-image: none;
+  }
+  .wh-item.level-4.q-white  { background: var(--quality-white); }
+  .wh-item.level-4.q-green  { background: var(--quality-green); }
+  .wh-item.level-4.q-blue   { background: var(--quality-blue); }
+  .wh-item.level-4.q-purple { background: var(--quality-purple); }
+  .wh-item.level-4.q-yellow { background: var(--quality-yellow); }
+  .wh-item.level-4.q-red    { background: var(--quality-red); }
+  .wh-item.level-4 .icon {
+    color: rgba(20, 20, 20, 0.8);
+    font-size: 14px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+  }
+
+  /* 物品尺寸（span） */
+  .wh-item.s-1x1 { grid-column: span 1; grid-row: span 1; }
+  .wh-item.s-1x2 { grid-column: span 1; grid-row: span 2; }
+  .wh-item.s-2x1 { grid-column: span 2; grid-row: span 1; }
+  .wh-item.s-2x2 { grid-column: span 2; grid-row: span 2; }
+  .wh-item.s-2x3 { grid-column: span 2; grid-row: span 3; }
+  .wh-item.s-3x2 { grid-column: span 3; grid-row: span 2; }
+  .wh-item.s-3x3 { grid-column: span 3; grid-row: span 3; }
+  .wh-item.s-4x3 { grid-column: span 4; grid-row: span 3; }
+  .wh-item.s-3x4 { grid-column: span 3; grid-row: span 4; }
+  .wh-item.s-4x4 { grid-column: span 4; grid-row: span 4; }
+
+  /* 角标 */
+  .wh-item::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    border: 1px solid rgba(20,20,20,0.15);
+    pointer-events: none;
+  }
+  .wh-item.level-1::after,
+  .wh-item.level-2::after {
+    border-color: rgba(255,255,255,0.08);
+  }
+
+  /* tooltip */
+  .wh-tooltip {
+    position: absolute;
+    background: var(--bg-overlay);
+    border: 1px solid var(--accent-gold);
+    padding: 10px 14px;
+    pointer-events: none;
+    z-index: 100;
+    min-width: 180px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: all var(--dur-fast) var(--ease);
+    font-size: 11px;
+  }
+  .wh-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .wh-tooltip .t-name {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+  .wh-tooltip .t-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+    color: var(--text-tertiary);
+  }
+  .wh-tooltip .t-row .v { color: var(--text-secondary); font-family: var(--font-mono); }
+  .wh-tooltip .t-row .v.gold { color: var(--accent-gold); }
+  .wh-tooltip .t-row .v.quality-purple { color: var(--quality-purple); }
+
+  /* === 右栏：其他玩家 & 信息汇总 === */
+  .right-col {
+    border-left: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .players-area {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .player-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--border-light);
+  }
+  .player-row:last-child { border-bottom: none; }
+  .pr-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--text-secondary);
+    font-weight: 300;
+  }
+  .pr-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .pr-name {
+    font-size: 13px;
+    margin-bottom: 2px;
+    font-family: var(--font-serif);
+    letter-spacing: 0.1em;
+  }
+  .pr-hero {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+  .pr-status {
+    text-align: right;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+  }
+  .pr-status.thinking {
+    color: var(--text-tertiary);
+  }
+  .pr-status.ready {
+    color: var(--success);
+  }
+  .pr-status .dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    margin-right: 4px;
+    animation: pulse 1.6s infinite;
+    vertical-align: middle;
+  }
+
+  /* 估值辅助 */
+  .estimate-area {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .estimate-title {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .est-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 12px;
+  }
+  .est-row .k {
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+  .est-row .v {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+  }
+  .est-row .v.gold {
+    color: var(--accent-gold);
+    font-size: 14px;
+  }
+
+  .est-hint {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: var(--bg-surface);
+    border-left: 2px solid var(--accent-gold-dim);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.8;
+  }
+
+  /* 阶段提示横幅 */
+  .phase-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    pointer-events: none;
+    text-align: center;
+    animation: fadeIn 0.8s var(--ease);
+  }
+  .phase-banner .pb-main {
+    font-family: var(--font-serif);
+    font-size: 64px;
+    color: var(--accent-gold);
+    letter-spacing: 0.5em;
+    font-weight: 200;
+    opacity: 0;
+  }
+
+  /* 大图标字符（仅装饰） */
+  .wh-item .icon {
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="auction-stage noise">
+
+  <!-- 顶栏 -->
+  <div class="auction-top">
+    <div class="round-info">
+      <div class="round-pill">
+        <span class="label">ROUND</span>
+        <span class="value">02 <span class="divider-inline">/</span> <span class="max">10</span></span>
+      </div>
+      <div class="multiplier-box">
+        <span class="mlabel">倍率</span>
+        <span class="mvalue">× 1.6</span>
+      </div>
+    </div>
+
+    <div class="phase-center">
+      <div class="phase-name">揭 露 阶 段</div>
+      <div class="phase-hint">REVEAL · 鉴宝中，请运用你的天赋与灵性</div>
+    </div>
+
+    <div class="top-right">
+      <div class="countdown-linear">
+        <div class="cd-row">
+          <span class="cd-label">TIME LEFT</span>
+          <span class="cd-num" id="cd-num">19</span>
+        </div>
+        <div class="cd-bar"><div class="fill" id="cd-fill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="auction-body">
+
+    <!-- 左栏 -->
+    <div class="left-col">
+      <div class="hero-mini">
+        <div class="hero-mini-portrait">卜</div>
+        <div class="hero-mini-info">
+          <div class="hm-name">占卜师</div>
+          <div class="hm-title">ORACLE</div>
+        </div>
+      </div>
+
+      <div class="col-section">
+        <div class="col-label">· 技 能 ·</div>
+        <div class="skill-slot cd">
+          <div class="s-head">
+            <span class="s-type">PASSIVE · 被动</span>
+            <span class="s-cd active">AUTO</span>
+          </div>
+          <div class="s-name">灵 识</div>
+          <div class="s-desc">每回合随机揭示 5 格品质</div>
+        </div>
+        <div class="skill-slot ready">
+          <div class="s-head">
+            <span class="s-type">ACTIVE · 主动</span>
+            <span class="s-cd">就绪</span>
+          </div>
+          <div class="s-name">天 眼</div>
+          <div class="s-desc">点击仓库任意一格 · 完全揭示</div>
+        </div>
+      </div>
+
+      <div class="col-section">
+        <div class="col-label">· 已揭露 ·</div>
+        <div class="reveal-stat">
+          <div class="stat-item">
+            <div class="sv">18<span class="unit">件</span></div>
+            <div class="sl">已知物品</div>
+          </div>
+          <div class="stat-item">
+            <div class="sv">142<span class="unit">格</span></div>
+            <div class="sl">揭露总格</div>
+          </div>
+          <div class="stat-item">
+            <div class="sv">7.1<span class="unit">%</span></div>
+            <div class="sl">揭露率</div>
+          </div>
+          <div class="stat-item">
+            <div class="sv">4<span class="unit">件</span></div>
+            <div class="sl">精确价值</div>
+          </div>
+        </div>
+        <div class="progress-row">
+          <span>L4</span>
+          <div class="progress-bar"><div class="pb-fill" style="width:22%;"></div></div>
+          <span class="num">4/18</span>
+        </div>
+      </div>
+
+      <div class="log-area">
+        <div class="col-label">· 事 件 日 志 ·</div>
+
+        <div class="log-item">
+          <div class="t">R2 · 14:37:12</div>
+          <div class="msg"><span class="hl">灵识</span> 自动揭示 · 品质 ×<span class="num">5</span></div>
+        </div>
+        <div class="log-item">
+          <div class="t">R2 · 14:36:58</div>
+          <div class="msg">第 <span class="num">2</span> 回合开始 · 倍率 <span class="hl">1.6</span>×</div>
+        </div>
+        <div class="log-item">
+          <div class="t">R1 · 14:36:30</div>
+          <div class="msg">流拍 · 进入下一回合</div>
+        </div>
+        <div class="log-item">
+          <div class="t">R1 · 14:35:50</div>
+          <div class="msg">你出价 <span class="num">4,200</span> · 最高出价 <span class="num">6,800</span></div>
+        </div>
+        <div class="log-item">
+          <div class="t">R1 · 14:35:15</div>
+          <div class="msg"><span class="hl">天眼</span> 释放 · 揭示格 (47, 6)</div>
+        </div>
+        <div class="log-item">
+          <div class="t">R1 · 14:34:40</div>
+          <div class="msg">进入拍卖房</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中央：仓库 -->
+    <div class="center-col">
+      <div class="warehouse-head">
+        <div class="wh-title">
+          <div class="wh-cn">仓 库 · 第 三 号</div>
+          <div class="wh-en">WAREHOUSE · NO. 003 · ASSORTED</div>
+        </div>
+        <div class="wh-legend">
+          <div class="legend-item">
+            <div class="legend-box unrevealed"></div>
+            <span>未揭露</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-box existence"></div>
+            <span>存在性</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-box quality-sample"></div>
+            <span>品质</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-box full-sample"></div>
+            <span>全揭示</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="warehouse-scroll" id="whScroll">
+        <div class="warehouse-grid" id="whGrid"></div>
+      </div>
+
+      <!-- Tooltip -->
+      <div class="wh-tooltip" id="whTooltip">
+        <div class="t-name">未 知 区 域</div>
+        <div class="t-row"><span>状态</span><span class="v">未揭露</span></div>
+        <div class="t-row"><span>位置</span><span class="v">(-, -)</span></div>
+      </div>
+    </div>
+
+    <!-- 右栏 -->
+    <div class="right-col">
+      <div class="players-area">
+        <div class="col-label" style="padding:0 0 14px;">· 对 局 玩 家 ·</div>
+
+        <div class="player-row">
+          <div class="pr-avatar" style="border-color:var(--accent-gold); color:var(--accent-gold);">圣</div>
+          <div class="pr-info">
+            <div class="pr-name">林圣杰</div>
+            <div class="pr-hero">占卜师 · 白银 IV</div>
+          </div>
+          <div class="pr-status ready"><span class="dot"></span>你</div>
+        </div>
+
+        <div class="player-row">
+          <div class="pr-avatar">汤</div>
+          <div class="pr-info">
+            <div class="pr-name">新手 Tom</div>
+            <div class="pr-hero">鹰眼 · AI · 新手</div>
+          </div>
+          <div class="pr-status thinking"><span class="dot"></span>揭露中</div>
+        </div>
+
+        <div class="player-row">
+          <div class="pr-avatar">博</div>
+          <div class="pr-info">
+            <div class="pr-name">老将 Bob</div>
+            <div class="pr-hero">学者 · AI · 老将</div>
+          </div>
+          <div class="pr-status thinking"><span class="dot"></span>揭露中</div>
+        </div>
+
+        <div class="player-row">
+          <div class="pr-avatar">卓</div>
+          <div class="pr-info">
+            <div class="pr-name">赌王 Alex</div>
+            <div class="pr-hero">骗子 · AI · 困难</div>
+          </div>
+          <div class="pr-status thinking"><span class="dot"></span>揭露中</div>
+        </div>
+      </div>
+
+      <div class="estimate-area">
+        <div class="estimate-title">估 值 辅 助</div>
+
+        <div class="est-row">
+          <span class="k">已揭露价值</span>
+          <span class="v">3,840</span>
+        </div>
+        <div class="est-row">
+          <span class="k">揭露比例</span>
+          <span class="v">7.1 %</span>
+        </div>
+        <div class="est-row">
+          <span class="k">线性推算总价</span>
+          <span class="v">≈ 54,000</span>
+        </div>
+        <div class="est-row">
+          <span class="k">仓库类型先验</span>
+          <span class="v">均匀仓 · ±12%</span>
+        </div>
+        <div style="height: 12px; border-top: 1px solid var(--border-light); margin-top: 8px;"></div>
+        <div class="est-row">
+          <span class="k" style="color:var(--accent-gold); letter-spacing: 0.2em;">综合估值</span>
+          <span class="v gold">~ 48,000</span>
+        </div>
+
+        <div class="est-hint">
+          揭露率较低（&lt; 10%），估值不确定性较高。<br>
+          本回合倍率 1.6×，若无把握可选择观望。
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ============= 生成仓库数据 =============
+  // 简化版：展示前 50 行 × 10 列 = 500 格（足够演示效果）
+  // 正式版 200 行会太长，这里演示用
+  const ROWS = 50;
+  const COLS = 10;
+
+  // 预设一些物品（紧密填充）
+  // 格式: { row, col, w, h, quality, level, name, value }
+  const items = [];
+
+  function addItem(r, c, w, h, quality, level, name, value) {
+    items.push({ r, c, w, h, quality, level, name, value });
+  }
+
+  // 样本物品配置（模拟紧密相邻）
+  const sampleItems = [
+    // ======== 顶部区域（已揭露较多） ========
+    { r: 0, c: 0, w: 2, h: 2, q: 'blue',   l: 4, name: '青花瓷盘',  v: 480 },
+    { r: 0, c: 2, w: 1, h: 1, q: 'white',  l: 3, name: '铜钱',      v: '~20' },
+    { r: 0, c: 3, w: 1, h: 1, q: 'white',  l: 3, name: '铜钱',      v: '~20' },
+    { r: 0, c: 4, w: 2, h: 3, q: 'purple', l: 4, name: '鎏金佛像',  v: 1850 },
+    { r: 0, c: 6, w: 1, h: 1, q: 'green',  l: 3, name: '玉佩',      v: '~80' },
+    { r: 0, c: 7, w: 1, h: 2, q: 'green',  l: 3, name: '卷轴',      v: '~90' },
+    { r: 0, c: 8, w: 2, h: 1, q: 'white',  l: 2, name: '未知类器皿', v: '?'  },
+    { r: 1, c: 2, w: 1, h: 1, q: 'white',  l: 3, name: '铜钱',      v: '~20' },
+    { r: 1, c: 3, w: 1, h: 1, q: 'green',  l: 4, name: '青玉镯',    v: 95 },
+    { r: 1, c: 6, w: 1, h: 2, q: 'blue',   l: 3, name: '未知品',    v: '~350' },
+    { r: 1, c: 8, w: 2, h: 2, q: 'yellow', l: 4, name: '唐三彩马',  v: 5200 },
+    { r: 2, c: 0, w: 1, h: 1, q: 'white',  l: 1, name: '未知',      v: '?'  },
+    { r: 2, c: 1, w: 1, h: 2, q: 'green',  l: 3, name: '古籍',      v: '~110' },
+    { r: 2, c: 2, w: 1, h: 1, q: 'white',  l: 1, name: '未知',      v: '?'  },
+    { r: 2, c: 3, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 3, c: 0, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 3, c: 2, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 3, c: 3, w: 3, h: 3, q: 'red',    l: 3, name: '未知(红)',  v: '~30000' },
+    { r: 3, c: 6, w: 2, h: 2, q: 'purple', l: 0, name: '',          v: '' },
+    { r: 3, c: 8, w: 2, h: 2, q: 'blue',   l: 0, name: '',          v: '' },
+
+    // 中间区域（大量未揭露）
+    { r: 4, c: 0, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 4, c: 1, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 4, c: 2, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 5, c: 0, w: 2, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 5, c: 2, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 5, c: 3, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 5, c: 6, w: 2, h: 2, q: 'yellow', l: 0, name: '',          v: '' },
+    { r: 5, c: 8, w: 2, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 6, c: 0, w: 4, h: 4, q: 'purple', l: 2, name: '未知家具',  v: '?'  },
+    { r: 6, c: 4, w: 2, h: 2, q: 'blue',   l: 0, name: '',          v: '' },
+    { r: 6, c: 8, w: 2, h: 2, q: 'green',  l: 0, name: '',          v: '' },
+    { r: 7, c: 4, w: 2, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 8, c: 4, w: 1, h: 1, q: 'white',  l: 3, name: '玉石',      v: '~30' },
+    { r: 8, c: 5, w: 1, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 8, c: 6, w: 2, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 8, c: 8, w: 2, h: 1, q: 'white',  l: 0, name: '',          v: '' },
+    { r: 9, c: 4, w: 3, h: 3, q: 'green',  l: 0, name: '',          v: '' },
+    { r: 9, c: 7, w: 3, h: 2, q: 'blue',   l: 0, name: '',          v: '' },
+    { r: 10, c: 0, w: 2, h: 2, q: 'white', l: 0, name: '',          v: '' },
+    { r: 10, c: 2, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 11, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 11, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 11, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 11, c: 8, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 11, c: 9, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 12, c: 0, w: 3, h: 2, q: 'red',   l: 0, name: '',          v: '' },
+    { r: 12, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 12, c: 4, w: 3, h: 3, q: 'purple',l: 0, name: '',          v: '' },
+    { r: 12, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 12, c: 8, w: 2, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 13, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 13, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 14, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 14, c: 1, w: 2, h: 2, q: 'yellow',l: 4, name: '明青花瓶',  v: 8800 },
+    { r: 14, c: 3, w: 1, h: 1, q: 'white', l: 3, name: '瓷片',      v: '~15' },
+    { r: 14, c: 7, w: 3, h: 2, q: 'blue',  l: 0, name: '',          v: '' },
+    { r: 15, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 15, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 16, c: 0, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 16, c: 3, w: 2, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 16, c: 5, w: 2, h: 2, q: 'white', l: 0, name: '',          v: '' },
+    { r: 16, c: 7, w: 3, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 17, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 17, c: 1, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 17, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 17, c: 8, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 18, c: 0, w: 4, h: 3, q: 'purple',l: 0, name: '',          v: '' },
+    { r: 18, c: 5, w: 1, h: 1, q: 'white', l: 3, name: '药瓶',      v: '~12' },
+    { r: 18, c: 6, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 18, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 18, c: 8, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 18, c: 9, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 19, c: 5, w: 2, h: 2, q: 'blue',  l: 0, name: '',          v: '' },
+    { r: 19, c: 7, w: 3, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 21, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 21, c: 1, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 21, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 21, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 21, c: 4, w: 2, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 21, c: 6, w: 2, h: 3, q: 'purple',l: 0, name: '',          v: '' },
+    { r: 21, c: 8, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 22, c: 0, w: 4, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 22, c: 8, w: 2, h: 2, q: 'blue',  l: 0, name: '',          v: '' },
+    { r: 23, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 23, c: 1, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 23, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 23, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 24, c: 0, w: 2, h: 2, q: 'red',   l: 0, name: '',          v: '' },
+    { r: 24, c: 2, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 24, c: 4, w: 2, h: 2, q: 'yellow',l: 0, name: '',          v: '' },
+    { r: 24, c: 6, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 24, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 25, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 25, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 25, c: 6, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 25, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 25, c: 8, w: 2, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 26, c: 0, w: 3, h: 3, q: 'purple',l: 0, name: '',          v: '' },
+    { r: 26, c: 3, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 26, c: 5, w: 3, h: 2, q: 'blue',  l: 0, name: '',          v: '' },
+    { r: 27, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 27, c: 4, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 28, c: 3, w: 3, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 28, c: 6, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 28, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 28, c: 8, w: 2, h: 2, q: 'yellow',l: 0, name: '',          v: '' },
+    { r: 29, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 29, c: 1, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 29, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 29, c: 6, w: 2, h: 2, q: 'white', l: 0, name: '',          v: '' },
+    { r: 30, c: 0, w: 2, h: 2, q: 'blue',  l: 0, name: '',          v: '' },
+    { r: 30, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 30, c: 3, w: 2, h: 2, q: 'white', l: 0, name: '',          v: '' },
+    { r: 30, c: 5, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 30, c: 8, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 31, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 31, c: 5, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 31, c: 8, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 31, c: 9, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 32, c: 0, w: 4, h: 3, q: 'red',   l: 0, name: '',          v: '' },
+    { r: 32, c: 4, w: 3, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 32, c: 7, w: 3, h: 3, q: 'purple',l: 0, name: '',          v: '' },
+    { r: 34, c: 4, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 34, c: 5, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 34, c: 6, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 35, c: 0, w: 2, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 35, c: 2, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 35, c: 4, w: 3, h: 3, q: 'yellow',l: 0, name: '',          v: '' },
+    { r: 35, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 35, c: 8, w: 2, h: 2, q: 'blue',  l: 0, name: '',          v: '' },
+    { r: 36, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 36, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 36, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 37, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 37, c: 1, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 37, c: 2, w: 2, h: 2, q: 'purple',l: 0, name: '',          v: '' },
+    { r: 37, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 38, c: 0, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 38, c: 4, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 38, c: 5, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 38, c: 6, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 38, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 38, c: 8, w: 2, h: 2, q: 'red',   l: 0, name: '',          v: '' },
+    { r: 39, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 39, c: 1, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 39, c: 4, w: 2, h: 2, q: 'blue',  l: 0, name: '',          v: '' },
+    { r: 39, c: 6, w: 2, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 40, c: 0, w: 4, h: 4, q: 'yellow',l: 0, name: '',          v: '' },
+    { r: 40, c: 8, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 41, c: 8, w: 2, h: 2, q: 'purple',l: 0, name: '',          v: '' },
+    { r: 42, c: 8, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 42, c: 9, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 43, c: 8, w: 2, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 44, c: 4, w: 3, h: 3, q: 'red',   l: 0, name: '',          v: '' },
+    { r: 44, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 45, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 45, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 45, c: 1, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 45, c: 2, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 45, c: 3, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 46, c: 0, w: 2, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 46, c: 7, w: 3, h: 2, q: 'blue',  l: 0, name: '',          v: '' },
+    { r: 46, c: 2, w: 2, h: 3, q: 'purple',l: 0, name: '',          v: '' },
+    { r: 47, c: 0, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 47, c: 1, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 48, c: 0, w: 4, h: 2, q: 'green', l: 0, name: '',          v: '' },
+    { r: 48, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+    { r: 48, c: 8, w: 2, h: 2, q: 'yellow',l: 0, name: '',          v: '' },
+    { r: 49, c: 7, w: 1, h: 1, q: 'white', l: 0, name: '',          v: '' },
+  ];
+
+  // 渲染
+  const grid = document.getElementById('whGrid');
+  grid.style.gridTemplateRows = `repeat(${ROWS}, 32px)`;
+
+  // 直接按 grid-area 定位每个物品
+  sampleItems.forEach((it, idx) => {
+    const el = document.createElement('div');
+    el.className = `wh-item s-${it.w}x${it.h} q-${it.q} level-${it.l}`;
+    el.style.gridRow = `${it.r + 1} / span ${it.h}`;
+    el.style.gridColumn = `${it.c + 1} / span ${it.w}`;
+    el.dataset.idx = idx;
+
+    // 只有 L2+ 才显示图标
+    let iconChar = '';
+    if (it.l >= 2) {
+      // 根据尺寸给个装饰文字
+      const chars = ['古','玉','瓷','书','珍','宝','器','画','琴','剑'];
+      iconChar = chars[idx % chars.length];
+    }
+    el.innerHTML = `<span class="icon">${iconChar}</span>`;
+
+    // tooltip 事件
+    el.addEventListener('mouseenter', e => showTooltip(e, it));
+    el.addEventListener('mousemove', e => moveTooltip(e));
+    el.addEventListener('mouseleave', hideTooltip);
+
+    grid.appendChild(el);
+  });
+
+  // ============= Tooltip =============
+  const tooltip = document.getElementById('whTooltip');
+  function showTooltip(e, item) {
+    const qNames = {white:'白·普通',green:'绿·优良',blue:'蓝·精良',purple:'紫·史诗',yellow:'黄·传说',red:'红·神话'};
+    const lNames = ['未揭露','存在性','类别','品质','全揭示'];
+
+    let html = '';
+    if (item.l === 0) {
+      html = `
+        <div class="t-name">未 知 区 域</div>
+        <div class="t-row"><span>状态</span><span class="v">尚未揭露</span></div>
+        <div class="t-row"><span>位置</span><span class="v">(${item.r + 1}, ${item.c + 1})</span></div>
+      `;
+    } else if (item.l >= 3) {
+      html = `
+        <div class="t-name">${item.name || '未命名'}</div>
+        <div class="t-row"><span>品质</span><span class="v quality-${item.q}" style="color:var(--quality-${item.q});">${qNames[item.q]}</span></div>
+        <div class="t-row"><span>尺寸</span><span class="v">${item.w} × ${item.h}</span></div>
+        <div class="t-row"><span>价值</span><span class="v ${item.l === 4 ? 'gold' : ''}">${item.v}</span></div>
+        <div class="t-row"><span>揭露层级</span><span class="v">L${item.l} · ${lNames[item.l]}</span></div>
+      `;
+    } else {
+      html = `
+        <div class="t-name">${item.name || '未知物品'}</div>
+        <div class="t-row"><span>尺寸</span><span class="v">${item.w} × ${item.h}</span></div>
+        <div class="t-row"><span>价值</span><span class="v">${item.v || '未知'}</span></div>
+        <div class="t-row"><span>揭露层级</span><span class="v">L${item.l} · ${lNames[item.l]}</span></div>
+      `;
+    }
+
+    tooltip.innerHTML = html;
+    tooltip.classList.add('show');
+    moveTooltip(e);
+  }
+  function moveTooltip(e) {
+    const pad = 14;
+    let x = e.clientX + pad;
+    let y = e.clientY + pad;
+    const rect = tooltip.getBoundingClientRect();
+    if (x + rect.width > window.innerWidth - 20) x = e.clientX - rect.width - pad;
+    if (y + rect.height > window.innerHeight - 20) y = e.clientY - rect.height - pad;
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+  }
+  function hideTooltip() {
+    tooltip.classList.remove('show');
+  }
+
+  // ============= 倒计时 =============
+  let cd = 19;
+  const cdNum = document.getElementById('cd-num');
+  const cdFill = document.getElementById('cd-fill');
+  const cdTotal = 30;
+  setInterval(() => {
+    cd--;
+    if (cd < 0) cd = 30;
+    cdNum.textContent = cd;
+    if (cd <= 5) cdNum.classList.add('warn'); else cdNum.classList.remove('warn');
+    cdFill.style.width = (cd / cdTotal * 100) + '%';
+  }, 1000);
+</script>
+
+</body>
+</html>

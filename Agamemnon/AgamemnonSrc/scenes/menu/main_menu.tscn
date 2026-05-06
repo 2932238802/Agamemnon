@@ -1,0 +1,325 @@
+[gd_scene format=3 uid="uid://bxsjs4mj4mvcs"]
+
+[ext_resource type="Script" uid="uid://djcfj6txlauwh" path="res://scripts/ui/menu/main_menu_controller/main_menu_controller.gd" id="1_nl8w3"]
+
+[node name="MainMenu" type="Control" unique_id=1310134808]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nl8w3")
+
+[node name="Background" type="ColorRect" parent="." unique_id=389106630]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.149, 0.149, 0.188, 1)
+
+[node name="BackgroundDecor" type="Control" parent="." unique_id=2049314710]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopBar" type="Control" parent="." unique_id=1397539490]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 24.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="Brand" type="Label" parent="TopBar" unique_id=455135032]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 48.0
+offset_top = -10.0
+offset_right = 400.0
+offset_bottom = 10.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 15
+text = "◆    AGAMEMNON · LosAngelous"
+vertical_alignment = 1
+
+[node name="MetaBox" type="HBoxContainer" parent="TopBar" unique_id=1776493801]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -12.0
+offset_right = -48.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 24
+alignment = 2
+
+[node name="Version" type="Label" parent="TopBar/MetaBox" unique_id=1635467401]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "v 0.1.0 DEMO"
+
+[node name="Clock" type="Label" parent="TopBar/MetaBox" unique_id=566205936]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "14 : 36 : 24"
+
+[node name="MainContent" type="VBoxContainer" parent="." unique_id=1932241165]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 48.0
+offset_top = -280.0
+offset_right = 680.0
+offset_bottom = 280.0
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="MainContent" unique_id=715322822]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 96
+text = "Agamemnon"
+
+[node name="Spacer2" type="Control" parent="MainContent" unique_id=1531710687]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="Subtitle" type="Label" parent="MainContent" unique_id=229956304]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 22
+text = "LosAngelous"
+
+[node name="Spacer3" type="Control" parent="MainContent" unique_id=997016796]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+
+[node name="Tagline" type="Label" parent="MainContent" unique_id=1719877474]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "估得准，才能赢。
+在信息与博弈之间，找到你自己的节奏。"
+
+[node name="Spacer4" type="Control" parent="MainContent" unique_id=40834415]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+
+[node name="MenuList" type="VBoxContainer" parent="MainContent" unique_id=1325507957]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="MenuItem_QuickMatch" type="Button" parent="MainContent/MenuList" unique_id=841566043]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "   01       快速匹配                                        4 人排位对战"
+flat = true
+alignment = 0
+
+[node name="MenuItem_Practice" type="Button" parent="MainContent/MenuList" unique_id=1381139794]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "   02       人机练习                                        1 人 · 3 AI"
+flat = true
+alignment = 0
+
+[node name="MenuItem_Custom" type="Button" parent="MainContent/MenuList" unique_id=1945796914]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "   03       自定义房间                                      与好友同乐"
+flat = true
+alignment = 0
+
+[node name="MenuItem_Codex" type="Button" parent="MainContent/MenuList" unique_id=749966363]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "   04       身份图鉴                                        查阅 · 鉴赏"
+flat = true
+alignment = 0
+
+[node name="MenuItem_Stats" type="Button" parent="MainContent/MenuList" unique_id=2134194961]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "   05       赛季战绩                                        历史 · 荣誉"
+flat = true
+alignment = 0
+
+[node name="MenuItem_Settings" type="Button" parent="MainContent/MenuList" unique_id=1399164404]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "   06       设置                                            个性调整"
+flat = true
+alignment = 0
+
+[node name="MenuItem_Quit" type="Button" parent="MainContent/MenuList" unique_id=1317652546]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "   07       退出                                            离席"
+flat = true
+alignment = 0
+
+[node name="RightInfo" type="VBoxContainer" parent="." unique_id=1391112138]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.975
+anchor_top = 0.5
+anchor_right = 0.975
+anchor_bottom = 0.5
+offset_left = -292.0
+offset_top = -48.0
+offset_bottom = 48.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="ServerStatus" type="Label" parent="RightInfo" unique_id=1230014764]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "东亚服 · 延迟 28 ms  ●"
+horizontal_alignment = 2
+
+[node name="SeasonName" type="Label" parent="RightInfo" unique_id=1611124561]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 11
+text = "当前赛季 · 古董珍玩"
+horizontal_alignment = 2
+
+[node name="SeasonCountdown" type="Label" parent="RightInfo" unique_id=48477152]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "距赛季结束 68 日"
+horizontal_alignment = 2
+
+[node name="PlayerCard" type="PanelContainer" parent="." unique_id=453777721]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -328.0
+offset_top = -130.0
+offset_right = -48.0
+offset_bottom = -66.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="HBox" type="HBoxContainer" parent="PlayerCard" unique_id=1124276289]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Avatar" type="Panel" parent="PlayerCard/HBox" unique_id=1426126447]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+
+[node name="AvatarChar" type="Label" parent="PlayerCard/HBox/Avatar" unique_id=279594898]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 20
+text = "L"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Info" type="VBoxContainer" parent="PlayerCard/HBox" unique_id=510379630]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 4
+
+[node name="Name" type="Label" parent="PlayerCard/HBox/Info" unique_id=516615263]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "LosAngelous"
+
+[node name="Rank" type="Label" parent="PlayerCard/HBox/Info" unique_id=1680827458]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "无段位 - 0 "
+
+[node name="OnlineLabel" type="Label" parent="PlayerCard/HBox" unique_id=296794568]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.498, 0.651, 0.498, 1)
+theme_override_font_sizes/font_size = 10
+text = "在线"
+horizontal_alignment = 1
+
+[node name="BottomBar" type="Control" parent="." unique_id=806009082]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Shortcuts" type="Label" parent="BottomBar" unique_id=284830265]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 48.0
+offset_top = -10.0
+offset_right = 500.0
+offset_bottom = 10.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "[ ↑ ↓ ]  选择       [ Enter ]  确认       [ ESC ]  退出"
+vertical_alignment = 1
+
+[node name="Slogan" type="Label" parent="BottomBar" unique_id=118300133]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -10.0
+offset_right = -48.0
+offset_bottom = 10.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "WARM  ·  WISE  ·  WAGER"
+horizontal_alignment = 2
+vertical_alignment = 1

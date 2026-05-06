@@ -1,0 +1,251 @@
+/* ============================================
+   Agamemnon UI Design System
+   风格：亲和、大气、灰白黑、莫兰迪色系
+   ============================================ */
+
+/* ---------- Reset ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* ---------- Design Tokens ---------- */
+:root {
+  /* 背景层（深色系，但不是纯黑） */
+  --bg-base: #17171A;       /* 主背景 */
+  --bg-surface: #1F1F23;    /* 卡片表面 */
+  --bg-elevated: #27272C;   /* 浮起元素 */
+  --bg-overlay: #0F0F11;    /* 暗色遮罩 */
+
+  /* 文字 */
+  --text-primary: #E8E6E1;    /* 主文字 米白 */
+  --text-secondary: #A8A6A1;  /* 次文字 暖灰 */
+  --text-tertiary: #6B6966;   /* 弱文字 */
+  --text-disabled: #4A4844;
+
+  /* 边框 */
+  --border-light: rgba(232, 230, 225, 0.08);
+  --border-medium: rgba(232, 230, 225, 0.15);
+  --border-strong: rgba(232, 230, 225, 0.25);
+
+  /* 点缀色（只在重点位置用） */
+  --accent-gold: #C9A961;     /* 主金 */
+  --accent-gold-dim: #8C7541; /* 暗金 */
+  --accent-warm: #B8906A;     /* 暖棕 */
+
+  /* 功能色（克制使用） */
+  --success: #7FA67F;   /* 柔和绿 */
+  --warning: #C9A961;   /* 同金色 */
+  --danger: #B07770;    /* 柔和红 */
+
+  /* 品质色（莫兰迪调） */
+  --quality-white: #BDB8B0;
+  --quality-green: #8FA888;
+  --quality-blue: #7B95B0;
+  --quality-purple: #9B8BAD;
+  --quality-yellow: #C9A961;
+  --quality-red: #B07770;
+
+  /* 字体 */
+  --font-serif: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --font-sans: "Noto Sans SC", "PingFang SC", sans-serif;
+  --font-mono: "JetBrains Mono", "Consolas", "Menlo", monospace;
+
+  /* 尺寸/间距 */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+
+  /* 阴影（极轻） */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.4);
+
+  /* 动效 */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur-base: 240ms;
+  --dur-slow: 400ms;
+}
+
+/* ---------- 通用组件 ---------- */
+
+/* Logo / 品牌标题 */
+.brand {
+  font-family: var(--font-serif);
+  letter-spacing: 0.3em;
+  font-weight: 400;
+}
+
+/* 按钮基础 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 32px;
+  background: transparent;
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all var(--dur-base) var(--ease);
+  border-radius: var(--radius-sm);
+}
+
+.btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  background: rgba(201, 169, 97, 0.05);
+}
+
+.btn-primary {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.btn-primary:hover {
+  background: var(--accent-gold);
+  color: var(--bg-base);
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.03);
+  border-color: var(--border-light);
+}
+
+.btn-lg {
+  padding: 16px 48px;
+  font-size: 15px;
+  letter-spacing: 0.15em;
+}
+
+.btn-sm {
+  padding: 6px 16px;
+  font-size: 12px;
+}
+
+/* 卡片 */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+}
+
+/* 分隔线（细） */
+.divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 16px 0;
+}
+
+.divider-v {
+  width: 1px;
+  background: var(--border-light);
+  align-self: stretch;
+}
+
+/* 品质徽章（小色块） */
+.quality-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.quality-dot.white  { background: var(--quality-white); }
+.quality-dot.green  { background: var(--quality-green); }
+.quality-dot.blue   { background: var(--quality-blue); }
+.quality-dot.purple { background: var(--quality-purple); }
+.quality-dot.yellow { background: var(--quality-yellow); }
+.quality-dot.red    { background: var(--quality-red); }
+
+/* 数字显示（等宽） */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 文字颜色工具 */
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+.text-accent { color: var(--accent-gold); }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-gold-dim);
+}
+
+/* 微妙的背景噪点（增加质感） */
+.noise {
+  position: relative;
+}
+.noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+}
+
+/* 页面进入动画 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn var(--dur-slow) var(--ease);
+}
+
+/* 打字机光标 */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.cursor::after {
+  content: "|";
+  animation: blink 1s step-end infinite;
+  color: var(--accent-gold);
+  font-weight: 100;
+  margin-left: 2px;
+}

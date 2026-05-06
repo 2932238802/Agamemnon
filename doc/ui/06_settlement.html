@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>结算 · Agamemnon</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .settle-stage {
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-base);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 背景装饰 */
+  .bg-hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-serif);
+    font-size: 600px;
+    color: rgba(232, 230, 225, 0.015);
+    letter-spacing: -0.05em;
+    font-weight: 100;
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  /* 顶部标题 */
+  .settle-header {
+    padding: 48px 64px 0;
+    text-align: center;
+    z-index: 2;
+    position: relative;
+  }
+  .settle-head-label {
+    font-size: 11px;
+    letter-spacing: 0.6em;
+    color: var(--accent-gold);
+    margin-bottom: 14px;
+  }
+  .settle-head-title {
+    font-family: var(--font-serif);
+    font-size: 36px;
+    font-weight: 200;
+    letter-spacing: 0.4em;
+    margin-bottom: 6px;
+  }
+  .settle-head-subtitle {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--text-tertiary);
+  }
+
+  /* 成功/失败横幅 */
+  .result-banner {
+    margin: 40px auto 32px;
+    width: 720px;
+    border: 1px solid var(--accent-gold);
+    background: linear-gradient(180deg, rgba(201,169,97,0.08), transparent 60%);
+    padding: 32px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 32px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  .result-banner::before, .result-banner::after {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--accent-gold);
+  }
+  .result-banner::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .result-banner::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+  .rb-side { text-align: center; }
+  .rb-side .lbl {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .rb-side .val {
+    font-family: var(--font-mono);
+    font-size: 40px;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+  }
+  .rb-side .val.gold { color: var(--accent-gold); }
+  .rb-side .val.red { color: var(--danger); }
+  .rb-side .diff {
+    margin-top: 6px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+  .rb-side .diff.gain { color: var(--success); }
+  .rb-side .diff.loss { color: var(--danger); }
+
+  .rb-center {
+    text-align: center;
+    padding: 0 20px;
+    border-left: 1px dashed var(--border-light);
+    border-right: 1px dashed var(--border-light);
+  }
+  .rb-center .verdict-label {
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .rb-center .verdict {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    letter-spacing: 0.4em;
+    color: var(--success);
+  }
+  .rb-center .verdict::before, .rb-center .verdict::after {
+    content: "◆";
+    font-size: 10px;
+    color: var(--accent-gold);
+    margin: 0 14px;
+    vertical-align: middle;
+  }
+  .rb-center .mtp {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    letter-spacing: 0.2em;
+  }
+  .rb-center .mtp .gold { color: var(--accent-gold); }
+
+  /* 主体 */
+  .settle-body {
+    flex: 1;
+    padding: 0 64px 64px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    z-index: 2;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 出价排行 */
+  .bid-rank {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    padding: 28px 32px;
+    overflow-y: auto;
+  }
+  .section-label {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .section-label .en {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+  }
+
+  .rank-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 120px 140px 80px;
+    align-items: center;
+    padding: 14px 8px;
+    border-bottom: 1px dashed var(--border-light);
+    gap: 16px;
+  }
+  .rank-row:last-child { border-bottom: none; }
+  .rank-row.winner {
+    background: linear-gradient(90deg, rgba(201,169,97,0.08), transparent 70%);
+    border-left: 2px solid var(--accent-gold);
+    padding-left: 14px;
+  }
+
+  .rk-pos {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--text-tertiary);
+    text-align: center;
+  }
+  .rank-row.winner .rk-pos { color: var(--accent-gold); }
+
+  .rk-player {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .rk-avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+  .rank-row.winner .rk-avatar {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+  }
+  .rk-player .pname {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    font-family: var(--font-serif);
+  }
+  .rk-player .phero {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+
+  .rk-bid {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--text-primary);
+  }
+
+  .rk-err {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .rk-err.gain { color: var(--success); }
+  .rk-err.loss { color: var(--danger); }
+  .rk-err.neutral { color: var(--text-tertiary); }
+
+  .rk-delta {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 300;
+  }
+  .rk-delta.gain { color: var(--success); }
+  .rk-delta.loss { color: var(--danger); }
+
+  /* 右侧：个人总结 + 排位 */
+  .personal-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+  }
+
+  .stat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    padding: 24px 28px;
+  }
+  .stat-card h4 {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+    margin-bottom: 18px;
+    font-weight: 400;
+  }
+
+  /* 排位变动 */
+  .rank-change {
+    text-align: center;
+  }
+  .rank-change .old,
+  .rank-change .new {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .rank-change .old {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--text-tertiary);
+    text-decoration: line-through;
+  }
+  .rank-change .arrow {
+    margin: 0 16px;
+    color: var(--accent-gold);
+    font-size: 20px;
+  }
+  .rank-change .new {
+    font-family: var(--font-mono);
+    font-size: 32px;
+    color: var(--accent-gold);
+  }
+  .rank-change .tier-info {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    letter-spacing: 0.2em;
+  }
+  .rank-change .delta-badge {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 4px 16px;
+    border: 1px solid;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+  }
+  .rank-change .delta-badge.gain {
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .rank-change .delta-badge.loss {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+
+  /* 物品预览 */
+  .items-preview {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+  }
+  .preview-item {
+    aspect-ratio: 1;
+    border: 1px solid var(--border-medium);
+  }
+  .preview-item.q-white  { background: var(--quality-white); opacity: 0.7; }
+  .preview-item.q-green  { background: var(--quality-green); opacity: 0.7; }
+  .preview-item.q-blue   { background: var(--quality-blue); opacity: 0.7; }
+  .preview-item.q-purple { background: var(--quality-purple); opacity: 0.7; }
+  .preview-item.q-yellow { background: var(--quality-yellow); opacity: 0.7; }
+  .preview-item.q-red    { background: var(--quality-red); opacity: 0.7; }
+  .preview-caption {
+    margin-top: 12px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-align: center;
+    letter-spacing: 0.2em;
+  }
+
+  /* 关键指标 */
+  .kpi-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .kpi-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-light);
+    font-size: 12px;
+  }
+  .kpi-row:last-child { border-bottom: none; }
+  .kpi-row .k {
+    color: var(--text-tertiary);
+    letter-spacing: 0.15em;
+  }
+  .kpi-row .v {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+  }
+  .kpi-row .v.gold { color: var(--accent-gold); }
+
+  /* 底部按钮 */
+  .bottom-actions {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    z-index: 10;
+  }
+
+  /* 进入动画 */
+  .settle-body { animation: fadeIn 0.8s var(--ease); }
+</style>
+</head>
+<body>
+
+<div class="settle-stage noise">
+
+  <div class="bg-hero-text">结</div>
+
+  <!-- 顶部 -->
+  <div class="settle-header">
+    <div class="settle-head-label">SETTLEMENT · 第 二 回合</div>
+    <div class="settle-head-title">落 · 锤</div>
+    <div class="settle-head-subtitle">THE GAVEL HAS FALLEN</div>
+  </div>
+
+  <!-- 结果横幅 -->
+  <div class="result-banner">
+    <div class="rb-side">
+      <div class="lbl">真 实 价 值</div>
+      <div class="val gold">48,500</div>
+      <div class="diff" style="color:var(--text-tertiary);">TRUE VALUE</div>
+    </div>
+
+    <div class="rb-center">
+      <div class="verdict-label">VERDICT</div>
+      <div class="verdict">拍 · 卖 · 成 · 功</div>
+      <div class="mtp">
+        倍率要求 <span class="gold">1.6 ×</span> · 首价 / 次价 = <span class="gold">1.68 ×</span>
+      </div>
+    </div>
+
+    <div class="rb-side">
+      <div class="lbl">成 交 价</div>
+      <div class="val">42,000</div>
+      <div class="diff gain">+ 6,500 · 捡漏 13.4%</div>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="settle-body">
+
+    <!-- 左侧：出价排行 -->
+    <div class="bid-rank">
+      <div class="section-label">
+        <span>· 出 价 排 行 ·</span>
+        <span class="en">BID RANKING</span>
+      </div>
+
+      <div class="rank-row winner">
+        <div class="rk-pos">Ⅰ</div>
+        <div class="rk-player">
+          <div class="rk-avatar">圣</div>
+          <div>
+            <div class="pname">林圣杰 (你)</div>
+            <div class="phero">占卜师 · 白银 IV</div>
+          </div>
+        </div>
+        <div class="rk-bid">42,000</div>
+        <div class="rk-err gain">−13.4% 捡漏</div>
+        <div class="rk-delta gain">+ 4</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rk-pos">Ⅱ</div>
+        <div class="rk-player">
+          <div class="rk-avatar">卓</div>
+          <div>
+            <div class="pname">赌王 Alex</div>
+            <div class="phero">骗子 · AI 困难</div>
+          </div>
+        </div>
+        <div class="rk-bid">25,000</div>
+        <div class="rk-err neutral">—</div>
+        <div class="rk-delta loss">− 1</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rk-pos">Ⅲ</div>
+        <div class="rk-player">
+          <div class="rk-avatar">博</div>
+          <div>
+            <div class="pname">老将 Bob</div>
+            <div class="phero">学者 · AI 老将</div>
+          </div>
+        </div>
+        <div class="rk-bid">18,500</div>
+        <div class="rk-err neutral">—</div>
+        <div class="rk-delta loss">− 1</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rk-pos">Ⅳ</div>
+        <div class="rk-player">
+          <div class="rk-avatar">汤</div>
+          <div>
+            <div class="pname">新手 Tom</div>
+            <div class="phero">鹰眼 · AI 新手</div>
+          </div>
+        </div>
+        <div class="rk-bid">0</div>
+        <div class="rk-err neutral">弃拍</div>
+        <div class="rk-delta loss">− 2</div>
+      </div>
+
+      <!-- 评语 -->
+      <div style="margin-top: 32px; padding: 20px 0; border-top: 1px solid var(--border-light);">
+        <div class="section-label" style="margin-bottom: 16px;">
+          <span>· 评 语 ·</span>
+          <span class="en">COMMENTARY</span>
+        </div>
+        <div style="font-family: var(--font-serif); font-size: 14px; line-height: 2; color: var(--text-secondary); letter-spacing: 0.08em;">
+          "把握尺度甚好。你在第二回合果断出手，<br>
+          以刚够倍率的出价压制对手，<br>
+          又恰好低于真实价值 13.4 %，稳步上分。"
+        </div>
+        <div style="margin-top:14px; text-align:right; font-size:11px; color:var(--accent-gold); letter-spacing:0.3em; font-family: var(--font-serif);">
+          — — 拍卖师 · 艾加门农
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧 -->
+    <div class="personal-col">
+
+      <!-- 排位变动 -->
+      <div class="stat-card">
+        <h4>· 排 位 变 动 ·</h4>
+        <div class="rank-change">
+          <span class="old">1456</span>
+          <span class="arrow">→</span>
+          <span class="new">1460</span>
+          <div class="tier-info">白银 IV · 维持段位</div>
+          <div class="delta-badge gain">+ 4 分</div>
+        </div>
+      </div>
+
+      <!-- 关键指标 -->
+      <div class="stat-card">
+        <h4>· 本 局 指 标 ·</h4>
+        <div class="kpi-list">
+          <div class="kpi-row">
+            <span class="k">本回合</span>
+            <span class="v">第 2 / 10</span>
+          </div>
+          <div class="kpi-row">
+            <span class="k">揭露率</span>
+            <span class="v">7.1 %</span>
+          </div>
+          <div class="kpi-row">
+            <span class="k">估值偏差</span>
+            <span class="v gold">−13.4 %</span>
+          </div>
+          <div class="kpi-row">
+            <span class="k">回合倍率</span>
+            <span class="v">× 1.6</span>
+          </div>
+          <div class="kpi-row">
+            <span class="k">用时</span>
+            <span class="v">00 : 02 : 15</span>
+          </div>
+          <div class="kpi-row">
+            <span class="k">英雄</span>
+            <span class="v">占卜师</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品预览 -->
+      <div class="stat-card">
+        <h4>· 你 的 新 藏 品 · 88 件 ·</h4>
+        <div class="items-preview">
+          <div class="preview-item q-red"></div>
+          <div class="preview-item q-yellow"></div>
+          <div class="preview-item q-yellow"></div>
+          <div class="preview-item q-purple"></div>
+          <div class="preview-item q-purple"></div>
+          <div class="preview-item q-purple"></div>
+          <div class="preview-item q-blue"></div>
+          <div class="preview-item q-blue"></div>
+          <div class="preview-item q-blue"></div>
+          <div class="preview-item q-blue"></div>
+          <div class="preview-item q-green"></div>
+          <div class="preview-item q-green"></div>
+          <div class="preview-item q-green"></div>
+          <div class="preview-item q-green"></div>
+          <div class="preview-item q-green"></div>
+          <div class="preview-item q-white"></div>
+          <div class="preview-item q-white"></div>
+          <div class="preview-item q-white"></div>
+          <div class="preview-item q-white"></div>
+          <div class="preview-item q-white"></div>
+          <div class="preview-item q-white"></div>
+          <div class="preview-item q-white"></div>
+          <div class="preview-item q-white"></div>
+          <div class="preview-item q-white"></div>
+        </div>
+        <div class="preview-caption">红 × 1 · 黄 × 2 · 紫 × 3 · 蓝 × 4 · 绿 × 5 · 白 × 73</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 底部操作 -->
+  <div class="bottom-actions">
+    <button class="btn btn-ghost" onclick="location.href='02_lobby.html'">返回大厅</button>
+    <button class="btn btn-primary btn-lg" onclick="location.href='04_auction_reveal.html'">再来一局</button>
+  </div>
+
+</div>
+
+</body>
+</html>

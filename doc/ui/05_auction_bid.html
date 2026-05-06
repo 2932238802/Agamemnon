@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>出价阶段 · Agamemnon</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .bid-stage {
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 背景仓库虚影 */
+  .bg-warehouse {
+    position: absolute;
+    inset: 0;
+    opacity: 0.18;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at center, rgba(201,169,97,0.04), transparent 60%);
+    filter: blur(1px);
+  }
+  .bg-warehouse::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 32px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 32px);
+  }
+
+  /* 顶栏（复用） */
+  .top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-light);
+    z-index: 10;
+  }
+  .round-pill {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-medium);
+    background: var(--bg-base);
+  }
+  .round-pill .label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+  }
+  .round-pill .value {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--text-primary);
+  }
+  .phase-center {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    letter-spacing: 0.5em;
+    color: var(--danger);
+  }
+  .phase-center::before, .phase-center::after {
+    content: "◆";
+    font-size: 8px;
+    color: var(--danger);
+    margin: 0 12px;
+    vertical-align: middle;
+  }
+  .cd-big {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    color: var(--danger);
+    letter-spacing: 0.05em;
+  }
+  .cd-big.warn { animation: blink 0.8s step-end infinite; }
+
+  /* 中央出价面板 */
+  .bid-panel {
+    width: 640px;
+    background: var(--bg-surface);
+    border: 1px solid var(--accent-gold);
+    padding: 56px 64px;
+    position: relative;
+    z-index: 5;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  .bid-panel::before, .bid-panel::after {
+    content: "";
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--accent-gold);
+    pointer-events: none;
+  }
+  .bid-panel::before {
+    top: -1px; left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-width: 2px;
+  }
+  .bid-panel::after {
+    bottom: -1px; right: -1px;
+    border-left: none;
+    border-top: none;
+    border-width: 2px;
+  }
+
+  .bid-header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .bid-title-en {
+    font-size: 11px;
+    letter-spacing: 0.6em;
+    color: var(--accent-gold);
+    margin-bottom: 10px;
+  }
+  .bid-title-cn {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    letter-spacing: 0.3em;
+    font-weight: 300;
+  }
+
+  .bid-meta-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .meta-item {
+    text-align: center;
+    padding: 14px 0;
+    border: 1px solid var(--border-light);
+  }
+  .meta-item .mk {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+  }
+  .meta-item .mv {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--text-primary);
+  }
+  .meta-item.highlight .mv { color: var(--accent-gold); }
+
+  /* 估算辅助 */
+  .estimate-block {
+    background: var(--bg-base);
+    border: 1px solid var(--border-light);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+  .est-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+  }
+  .est-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .est-line .k { letter-spacing: 0.1em; }
+  .est-line .v { color: var(--text-primary); font-family: var(--font-mono); }
+  .est-summary {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .est-summary .label {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--accent-gold);
+  }
+  .est-summary .value {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    color: var(--accent-gold);
+  }
+  .est-summary .value .unit {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-left: 6px;
+  }
+
+  /* 输入框 */
+  .bid-input-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .bid-input-wrap {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .bid-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--accent-gold);
+    padding: 16px 40px;
+    font-family: var(--font-mono);
+    font-size: 48px;
+    color: var(--text-primary);
+    text-align: center;
+    letter-spacing: 0.05em;
+    outline: none;
+  }
+  .bid-input:focus {
+    border-bottom-color: var(--accent-gold);
+    color: var(--accent-gold);
+  }
+  .bid-input-currency {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--accent-gold);
+  }
+
+  /* 快捷加减 */
+  .quick-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .quick-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--border-medium);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all var(--dur-fast) var(--ease);
+  }
+  .quick-btn:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+  }
+
+  /* 决策提示 */
+  .decision-hint {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+  .dh-item {
+    padding: 12px 14px;
+    border-left: 2px solid var(--border-medium);
+    line-height: 1.7;
+  }
+  .dh-item.warn { border-left-color: var(--danger); }
+  .dh-item.good { border-left-color: var(--success); }
+  .dh-item strong {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    letter-spacing: 0.1em;
+    font-weight: normal;
+  }
+
+  /* 按钮组 */
+  .action-row {
+    display: flex;
+    gap: 16px;
+  }
+  .action-row .btn {
+    flex: 1;
+    padding: 18px 0;
+  }
+
+  /* 右上角玩家状态 */
+  .mini-players {
+    position: absolute;
+    top: 96px;
+    right: 32px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mini-p {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    min-width: 220px;
+  }
+  .mini-p .av {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .mini-p .info {
+    flex: 1;
+  }
+  .mini-p .info .n {
+    font-size: 12px;
+    margin-bottom: 2px;
+    letter-spacing: 0.1em;
+  }
+  .mini-p .info .s {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.15em;
+  }
+  .mini-p.locked .av {
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .mini-p.locked .info .s { color: var(--success); }
+  .mini-p.locked { border-color: rgba(127,166,127,0.3); }
+
+  /* 左侧回合提示 */
+  .round-info-side {
+    position: absolute;
+    top: 50%;
+    left: 48px;
+    transform: translateY(-50%);
+    z-index: 5;
+    max-width: 240px;
+  }
+  .round-info-side .label {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .round-info-side .r-tip {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+  }
+  .round-info-side .r-tip .hl {
+    color: var(--accent-gold);
+  }
+  .round-info-side .rule-formula {
+    padding: 16px 18px;
+    background: var(--bg-surface);
+    border-left: 2px solid var(--accent-gold);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 2;
+  }
+  .round-info-side .rule-formula .gold {
+    color: var(--accent-gold);
+  }
+</style>
+</head>
+<body>
+
+<div class="bid-stage noise">
+
+  <div class="bg-warehouse"></div>
+
+  <!-- 顶栏 -->
+  <div class="top-bar">
+    <div class="round-pill">
+      <span class="label">ROUND</span>
+      <span class="value">02 / <span style="color:var(--text-tertiary);">10</span></span>
+    </div>
+
+    <div class="phase-center">出 价 阶 段</div>
+
+    <div class="cd-big" id="cdBig">14</div>
+  </div>
+
+  <!-- 左侧回合说明 -->
+  <div class="round-info-side">
+    <div class="label">· 本 回 合 规 则 ·</div>
+    <div class="r-tip">
+      本回合倍率为 <span class="hl">1.6×</span><br>
+      最高价需达<br>次高价的 <span class="hl">1.6 倍</span>方能拍下。
+    </div>
+    <div class="rule-formula">
+      P<sub>1</sub> ≥ P<sub>2</sub> × <span class="gold">1.6</span><br>
+      <span style="color:var(--text-tertiary); font-size:11px;">→ 拍卖成功</span>
+    </div>
+  </div>
+
+  <!-- 右侧玩家状态 -->
+  <div class="mini-players">
+    <div class="mini-p">
+      <div class="av" style="border-color:var(--accent-gold); color:var(--accent-gold);">圣</div>
+      <div class="info">
+        <div class="n">林圣杰 (你)</div>
+        <div class="s" style="color:var(--accent-gold);">正在出价 · · ·</div>
+      </div>
+    </div>
+    <div class="mini-p locked">
+      <div class="av">汤</div>
+      <div class="info">
+        <div class="n">新手 Tom</div>
+        <div class="s">● 已锁定</div>
+      </div>
+    </div>
+    <div class="mini-p">
+      <div class="av">博</div>
+      <div class="info">
+        <div class="n">老将 Bob</div>
+        <div class="s">思考中 · · ·</div>
+      </div>
+    </div>
+    <div class="mini-p locked">
+      <div class="av">卓</div>
+      <div class="info">
+        <div class="n">赌王 Alex</div>
+        <div class="s">● 已锁定</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 中央出价面板 -->
+  <div class="bid-panel fade-in">
+    <div class="bid-header">
+      <div class="bid-title-en">SEALED BID</div>
+      <div class="bid-title-cn">密 · 封 · 出 · 价</div>
+    </div>
+
+    <!-- 关键指标 -->
+    <div class="bid-meta-row">
+      <div class="meta-item">
+        <div class="mk">REVEAL</div>
+        <div class="mv">7.1 %</div>
+      </div>
+      <div class="meta-item highlight">
+        <div class="mk">MULTIPLIER</div>
+        <div class="mv">× 1.6</div>
+      </div>
+      <div class="meta-item">
+        <div class="mk">KNOWN VALUE</div>
+        <div class="mv">3,840</div>
+      </div>
+    </div>
+
+    <!-- 估值辅助 -->
+    <div class="estimate-block">
+      <div class="est-grid">
+        <div class="est-line"><span class="k">已揭露物品</span><span class="v">18 件</span></div>
+        <div class="est-line"><span class="k">其中 L4</span><span class="v">4 件</span></div>
+        <div class="est-line"><span class="k">已知总值</span><span class="v">3,840</span></div>
+        <div class="est-line"><span class="k">线性推算</span><span class="v">~ 54,000</span></div>
+      </div>
+      <div class="est-summary">
+        <span class="label">综 合 估 值</span>
+        <span class="value">≈ 48,000 <span class="unit">± 12%</span></span>
+      </div>
+    </div>
+
+    <!-- 输入 -->
+    <label class="bid-input-label">· 你 的 出 价 ·</label>
+    <div class="bid-input-wrap">
+      <span class="bid-input-currency">$</span>
+      <input type="text" class="bid-input" id="bidInput" value="42,000" />
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-btn">− 10000</button>
+      <button class="quick-btn">− 5000</button>
+      <button class="quick-btn">− 1000</button>
+      <button class="quick-btn">+ 1000</button>
+      <button class="quick-btn">+ 5000</button>
+      <button class="quick-btn">+ 10000</button>
+    </div>
+
+    <!-- 决策提示 -->
+    <div class="decision-hint">
+      <div class="dh-item warn">
+        <strong>出价过高</strong>
+        若真实价值小于你的出价<br>拍下后将掉分
+      </div>
+      <div class="dh-item good">
+        <strong>出价得当</strong>
+        若捡漏且低于对手 2/3<br>可上分 +12 以内
+      </div>
+    </div>
+
+    <!-- 操作 -->
+    <div class="action-row">
+      <button class="btn btn-ghost">弃 · 拍</button>
+      <button class="btn btn-primary" onclick="location.href='06_settlement.html'">锁 定 · 出 价</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let cd = 14;
+  const cdEl = document.getElementById('cdBig');
+  setInterval(() => {
+    cd--;
+    if (cd < 0) cd = 20;
+    cdEl.textContent = String(cd).padStart(2, '0');
+    if (cd <= 5) cdEl.classList.add('warn'); else cdEl.classList.remove('warn');
+  }, 1000);
+
+  // 出价格式化
+  const bidInput = document.getElementById('bidInput');
+  bidInput.addEventListener('input', () => {
+    let v = bidInput.value.replace(/[^0-9]/g, '');
+    if (v) bidInput.value = parseInt(v).toLocaleString();
+  });
+</script>
+
+</body>
+</html>

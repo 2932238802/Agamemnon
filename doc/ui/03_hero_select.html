@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>英雄选择 · Agamemnon</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .hero-stage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-base);
+    overflow: hidden;
+  }
+
+  /* 顶栏 */
+  .top-bar {
+    height: 72px;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .phase-title {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    letter-spacing: 0.4em;
+    color: var(--text-primary);
+  }
+  .phase-title .num-lead {
+    color: var(--accent-gold);
+    margin-right: 14px;
+    font-size: 12px;
+  }
+  .countdown {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .countdown-ring {
+    position: relative;
+    width: 48px;
+    height: 48px;
+  }
+  .countdown-ring svg {
+    transform: rotate(-90deg);
+  }
+  .countdown-ring circle {
+    fill: none;
+    stroke-width: 2;
+  }
+  .countdown-ring .bg-ring {
+    stroke: var(--border-light);
+  }
+  .countdown-ring .fg-ring {
+    stroke: var(--accent-gold);
+    stroke-dasharray: 144;
+    stroke-dashoffset: 40;
+    transition: stroke-dashoffset 1s linear;
+  }
+  .countdown-ring .num {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--accent-gold);
+  }
+
+  /* 主体 */
+  .hero-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    overflow: hidden;
+  }
+
+  /* 左侧：英雄网格 */
+  .hero-grid-wrap {
+    padding: 40px 48px;
+    overflow-y: auto;
+    position: relative;
+  }
+  .hero-grid-wrap::before {
+    content: "HEROES";
+    position: absolute;
+    top: 40px;
+    right: 48px;
+    font-family: var(--font-serif);
+    font-size: 120px;
+    color: rgba(232,230,225,0.02);
+    letter-spacing: 0.1em;
+    font-weight: 100;
+    pointer-events: none;
+  }
+
+  .section-header {
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .section-title-cn {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+  .section-title-en {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--text-tertiary);
+  }
+
+  .hero-filters {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .hero-filter {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 6px 0;
+    border-bottom: 1px solid transparent;
+    transition: all var(--dur-base) var(--ease);
+  }
+  .hero-filter.active {
+    color: var(--accent-gold);
+    border-bottom-color: var(--accent-gold);
+  }
+  .hero-filter:hover:not(.active) {
+    color: var(--text-secondary);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .hero-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    padding: 24px 20px;
+    cursor: pointer;
+    transition: all var(--dur-base) var(--ease);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold-dim), transparent);
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease);
+  }
+  .hero-card:hover {
+    border-color: var(--border-strong);
+    background: var(--bg-elevated);
+  }
+  .hero-card:hover::before {
+    opacity: 1;
+  }
+  .hero-card.selected {
+    border-color: var(--accent-gold);
+    background: linear-gradient(180deg, rgba(201,169,97,0.1), var(--bg-surface) 70%);
+  }
+  .hero-card.selected::before {
+    opacity: 1;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+  }
+  .hero-card.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .hero-portrait {
+    width: 88px;
+    height: 88px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-medium);
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 40px;
+    color: var(--text-secondary);
+    font-weight: 200;
+  }
+  .hero-card.selected .hero-portrait {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    background: var(--bg-base);
+  }
+
+  .hero-name {
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 18px;
+    letter-spacing: 0.15em;
+    margin-bottom: 4px;
+  }
+  .hero-title {
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+    margin-bottom: 16px;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .hero-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border: 1px solid var(--border-medium);
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+
+  .hero-difficulty {
+    text-align: center;
+    color: var(--accent-gold-dim);
+    letter-spacing: 0.3em;
+    font-size: 10px;
+  }
+
+  /* 右侧：英雄详情 */
+  .hero-detail {
+    border-left: 1px solid var(--border-light);
+    background: var(--bg-surface);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .detail-header {
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .detail-portrait {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 24px;
+    border: 1px solid var(--accent-gold);
+    background: var(--bg-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 72px;
+    font-weight: 200;
+    color: var(--accent-gold);
+    position: relative;
+  }
+  .detail-portrait::before,
+  .detail-portrait::after {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--accent-gold);
+  }
+  .detail-portrait::before {
+    top: -8px;
+    left: -8px;
+    border-right: none;
+    border-bottom: none;
+  }
+  .detail-portrait::after {
+    bottom: -8px;
+    right: -8px;
+    border-left: none;
+    border-top: none;
+  }
+
+  .detail-name {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    letter-spacing: 0.2em;
+    margin-bottom: 4px;
+  }
+  .detail-title {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--accent-gold);
+  }
+
+  .detail-bio {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 2;
+    text-align: center;
+    padding: 0 8px 24px;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 24px;
+    font-family: var(--font-serif);
+    letter-spacing: 0.1em;
+  }
+
+  /* 技能块 */
+  .skill-block {
+    margin-bottom: 24px;
+  }
+  .skill-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+  }
+  .skill-label .tag {
+    padding: 2px 8px;
+    border: 1px solid var(--accent-gold-dim);
+    color: var(--accent-gold);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+  .skill-name {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+  .skill-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+  .skill-meta {
+    margin-top: 10px;
+    display: flex;
+    gap: 24px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.1em;
+  }
+  .skill-meta .num {
+    color: var(--accent-gold);
+  }
+
+  .bottom-confirm {
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  /* 进度/阶段指示（顶部） */
+  .phase-steps {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.15em;
+  }
+  .step-item.active {
+    color: var(--accent-gold);
+  }
+  .step-item.done {
+    color: var(--text-secondary);
+  }
+  .step-num {
+    font-family: var(--font-mono);
+    border: 1px solid currentColor;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  .step-sep {
+    width: 32px;
+    height: 1px;
+    background: var(--border-light);
+  }
+</style>
+</head>
+<body>
+
+<div class="hero-stage noise">
+
+  <!-- 顶栏 -->
+  <div class="top-bar">
+    <div class="phase-steps">
+      <div class="step-item done">
+        <div class="step-num">✓</div>
+        <span>组队</span>
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item active">
+        <div class="step-num">II</div>
+        <span>英雄</span>
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item">
+        <div class="step-num">III</div>
+        <span>天赋</span>
+      </div>
+      <div class="step-sep"></div>
+      <div class="step-item">
+        <div class="step-num">IV</div>
+        <span>入场</span>
+      </div>
+    </div>
+
+    <div class="phase-title">
+      <span class="num-lead">II ·</span>选择英雄
+    </div>
+
+    <div class="countdown">
+      <span style="font-size:11px; color:var(--text-tertiary); letter-spacing: 0.2em;">REMAINING</span>
+      <div class="countdown-ring">
+        <svg width="48" height="48" viewBox="0 0 48 48">
+          <circle class="bg-ring" cx="24" cy="24" r="23"/>
+          <circle class="fg-ring" cx="24" cy="24" r="23"/>
+        </svg>
+        <div class="num">18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="hero-body">
+
+    <!-- 左侧英雄列表 -->
+    <div class="hero-grid-wrap">
+      <div class="section-header">
+        <div class="section-title-cn">执卷者</div>
+        <div class="section-title-en">CHOOSE YOUR PATH TO INTELLIGENCE</div>
+      </div>
+
+      <div class="hero-filters">
+        <div class="hero-filter active">全部</div>
+        <div class="hero-filter">情报</div>
+        <div class="hero-filter">心理</div>
+        <div class="hero-filter">专精</div>
+      </div>
+
+      <div class="hero-grid">
+
+        <div class="hero-card selected" data-hero="oracle">
+          <div class="hero-portrait">卜</div>
+          <div class="hero-name">占卜师</div>
+          <div class="hero-title">ORACLE</div>
+          <div class="hero-tags">
+            <div class="hero-tag">情报</div>
+            <div class="hero-tag">稳健</div>
+          </div>
+          <div class="hero-difficulty">★ ☆ ☆ ☆ ☆</div>
+        </div>
+
+        <div class="hero-card" data-hero="eagle">
+          <div class="hero-portrait">鹰</div>
+          <div class="hero-name">鹰眼</div>
+          <div class="hero-title">EAGLE</div>
+          <div class="hero-tags">
+            <div class="hero-tag">范围</div>
+            <div class="hero-tag">扫描</div>
+          </div>
+          <div class="hero-difficulty">★ ★ ☆ ☆ ☆</div>
+        </div>
+
+        <div class="hero-card" data-hero="scholar">
+          <div class="hero-portrait">学</div>
+          <div class="hero-name">学者</div>
+          <div class="hero-title">SCHOLAR</div>
+          <div class="hero-tags">
+            <div class="hero-tag">精确</div>
+            <div class="hero-tag">统计</div>
+          </div>
+          <div class="hero-difficulty">★ ★ ★ ☆ ☆</div>
+        </div>
+
+        <div class="hero-card" data-hero="thief">
+          <div class="hero-portrait">盗</div>
+          <div class="hero-name">盗贼</div>
+          <div class="hero-title">THIEF</div>
+          <div class="hero-tags">
+            <div class="hero-tag">广撒</div>
+            <div class="hero-tag">偷看</div>
+          </div>
+          <div class="hero-difficulty">★ ★ ★ ★ ☆</div>
+        </div>
+
+        <div class="hero-card" data-hero="trickster">
+          <div class="hero-portrait">骗</div>
+          <div class="hero-name">骗子</div>
+          <div class="hero-title">TRICKSTER</div>
+          <div class="hero-tags">
+            <div class="hero-tag">欺诈</div>
+            <div class="hero-tag">诡道</div>
+          </div>
+          <div class="hero-difficulty">★ ★ ★ ★ ★</div>
+        </div>
+
+        <div class="hero-card" data-hero="merchant">
+          <div class="hero-portrait">商</div>
+          <div class="hero-name">商贾</div>
+          <div class="hero-title">MERCHANT</div>
+          <div class="hero-tags">
+            <div class="hero-tag">宏观</div>
+            <div class="hero-tag">出价</div>
+          </div>
+          <div class="hero-difficulty">★ ★ ★ ☆ ☆</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 右侧英雄详情 -->
+    <div class="hero-detail">
+      <div class="detail-header">
+        <div class="detail-portrait">卜</div>
+        <div class="detail-name">占 卜 师</div>
+        <div class="detail-title">ORACLE</div>
+      </div>
+
+      <div class="detail-bio">
+        "心有灵犀，目通玄关。<br>众物有序，皆在我神识之中。"
+      </div>
+
+      <div class="skill-block">
+        <div class="skill-label">
+          <span class="tag">PASSIVE</span>
+          <span>被 动 · 天 眼 通</span>
+        </div>
+        <div class="skill-name">灵识</div>
+        <div class="skill-desc">每回合开始时，随机揭示仓库中 5 格的品质信息。揭示位置不可选择。</div>
+        <div class="skill-meta">
+          <span>数量 <span class="num">5 格</span></span>
+          <span>层级 <span class="num">L3 品质</span></span>
+        </div>
+      </div>
+
+      <div class="skill-block">
+        <div class="skill-label">
+          <span class="tag">ACTIVE</span>
+          <span>主 动 · 洞 察 诀</span>
+        </div>
+        <div class="skill-name">天眼</div>
+        <div class="skill-desc">指定仓库任意一格，完全揭示其物品名称与精确价值。适合锁定大件、最大化信息价值。</div>
+        <div class="skill-meta">
+          <span>冷却 <span class="num">2 回合</span></span>
+          <span>层级 <span class="num">L4 全揭示</span></span>
+        </div>
+      </div>
+
+      <div class="skill-block">
+        <div class="skill-label">
+          <span>风 格 · 特 点</span>
+        </div>
+        <div class="skill-desc" style="color: var(--text-tertiary); font-size: 11px;">
+          占卜师是新手的理想选择。被动稳定提供品质线索，主动可在关键回合锁定大件。适合喜欢稳步累积信息的玩家。
+        </div>
+      </div>
+
+      <div class="bottom-confirm">
+        <button class="btn btn-primary btn-lg" style="width:100%;" onclick="location.href='04_auction_reveal.html'">
+          确认 · 进入拍卖
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const heroData = {
+    oracle: {
+      name: '占 卜 师', title: 'ORACLE', avatar: '卜',
+      bio: '"心有灵犀，目通玄关。<br>众物有序，皆在我神识之中。"',
+      passive: { name: '灵识', desc: '每回合开始时，随机揭示仓库中 5 格的品质信息。揭示位置不可选择。', meta: '数量·5格 | 层级·L3 品质' },
+      active: { name: '天眼', desc: '指定仓库任意一格，完全揭示其物品名称与精确价值。', meta: '冷却·2 回合 | 层级·L4 全揭示' },
+      style: '占卜师是新手的理想选择。被动稳定提供品质线索，主动可在关键回合锁定大件。'
+    },
+    eagle: {
+      name: '鹰 眼', title: 'EAGLE', avatar: '鹰',
+      bio: '"从不凝视一物，却能看透一片天空。"',
+      passive: { name: '巡天', desc: '每回合自动揭示一整行 10 个格子的品质信息。行号随机。', meta: '数量·10格 | 层级·L3 品质' },
+      active: { name: '长空', desc: '指定任意一列，揭示该列所有 200 格的存在性信息。', meta: '冷却·3 回合 | 层级·L1 存在' },
+      style: '鹰眼以范围取胜。信息广博但精度有限，适合乐于"看趋势"的玩家。'
+    },
+    scholar: {
+      name: '学 者', title: 'SCHOLAR', avatar: '学',
+      bio: '"少而精，胜于多而乱。"',
+      passive: { name: '考据', desc: '每回合随机揭示 3 格的完整信息（名称与精确价值）。', meta: '数量·3格 | 层级·L4 全揭示' },
+      active: { name: '盘点', desc: '不指定格子，显示本仓库各品质物品的总数分布。', meta: '冷却·2 回合 | 宏观数据' },
+      style: '学者用少而精的信息构建估值锚点。适合善于推断的玩家。'
+    },
+    thief: {
+      name: '盗 贼', title: 'THIEF', avatar: '盗',
+      bio: '"最快的情报，是从别人那里偷来的。"',
+      passive: { name: '潜行', desc: '每回合揭示 10 格的存在性信息，无品质揭示。', meta: '数量·10格 | 层级·L1 存在' },
+      active: { name: '偷窥', desc: '随机获取一位对手已揭示的 3 格信息。', meta: '冷却·3 回合 | 信息窃取' },
+      style: '盗贼依赖对手。适合在激进局中作乱的玩家。'
+    },
+    trickster: {
+      name: '骗 子', title: 'TRICKSTER', avatar: '骗',
+      bio: '"真真假假，假假真真。<br>你分得清，才叫本事。"',
+      passive: { name: '障眼', desc: '每回合揭示 3 格完整信息，其中 1 格为假。', meta: '数量·3格 | 含 1 条假情报' },
+      active: { name: '栽赃', desc: '向指定对手投放 1 条假 L4 信息。', meta: '冷却·2 回合 | 心理博弈' },
+      style: '极高上限，极高下限。自己也要辨别真假。适合老练玩家。'
+    },
+    merchant: {
+      name: '商 贾', title: 'MERCHANT', avatar: '商',
+      bio: '"生意不在细物，在整体的盘子。"',
+      passive: { name: '市势', desc: '每回合获得 1 条关于本仓库总价值的宏观评级提示。', meta: '层级·宏观判断' },
+      active: { name: '抢单', desc: '在平价判定时，抢先成为获得者。', meta: '冷却·3 回合 | 平局优势' },
+      style: '商贾不看具体，看整体。适合对"估值感觉"自信的玩家。'
+    }
+  };
+
+  const cards = document.querySelectorAll('.hero-card');
+  const detail = document.querySelector('.hero-detail');
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      if (card.classList.contains('locked')) return;
+      cards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const hero = heroData[card.dataset.hero];
+      if (!hero) return;
+      updateDetail(hero, card.dataset.hero);
+    });
+  });
+
+  function updateDetail(hero, id) {
+    detail.innerHTML = `
+      <div class="detail-header">
+        <div class="detail-portrait">${hero.avatar}</div>
+        <div class="detail-name">${hero.name}</div>
+        <div class="detail-title">${hero.title}</div>
+      </div>
+      <div class="detail-bio">${hero.bio}</div>
+      <div class="skill-block">
+        <div class="skill-label">
+          <span class="tag">PASSIVE</span>
+          <span>被动</span>
+        </div>
+        <div class="skill-name">${hero.passive.name}</div>
+        <div class="skill-desc">${hero.passive.desc}</div>
+        <div class="skill-meta">${hero.passive.meta.split('|').map(s => `<span>${s.trim()}</span>`).join('')}</div>
+      </div>
+      <div class="skill-block">
+        <div class="skill-label">
+          <span class="tag">ACTIVE</span>
+          <span>主动</span>
+        </div>
+        <div class="skill-name">${hero.active.name}</div>
+        <div class="skill-desc">${hero.active.desc}</div>
+        <div class="skill-meta">${hero.active.meta.split('|').map(s => `<span>${s.trim()}</span>`).join('')}</div>
+      </div>
+      <div class="skill-block">
+        <div class="skill-label"><span>风 格</span></div>
+        <div class="skill-desc" style="color: var(--text-tertiary); font-size: 11px;">${hero.style}</div>
+      </div>
+      <div class="bottom-confirm">
+        <button class="btn btn-primary btn-lg" style="width:100%;" onclick="location.href='04_auction_reveal.html'">
+          确认 · 进入拍卖
+        </button>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,783 @@
+[gd_scene format=3 uid="uid://dbfh687mdfwyu"]
+
+[ext_resource type="Script" uid="uid://bjuuwg5lh71ut" path="res://scripts/ui/menu/lobby_controller/lobby_controller.gd" id="1_720y1"]
+
+[node name="Lobby" type="Control" unique_id=1079932614]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_720y1")
+
+[node name="Background" type="ColorRect" parent="." unique_id=342087387]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.149, 0.149, 0.188, 1)
+
+[node name="TopBar" type="PanelContainer" parent="." unique_id=931563339]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 64.0
+grow_horizontal = 2
+
+[node name="TopBarHBox" type="HBoxContainer" parent="TopBar" unique_id=1332324315]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="LeftMargin" type="Control" parent="TopBar/TopBarHBox" unique_id=1482550263]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+
+[node name="Brand" type="Label" parent="TopBar/TopBarHBox" unique_id=204766837]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 13
+text = "◆   AGAMEMNON"
+
+[node name="NavTab_Lobby" type="Label" parent="TopBar/TopBarHBox" unique_id=1934383223]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 13
+text = "大  厅"
+
+[node name="NavTab_Heroes" type="Label" parent="TopBar/TopBarHBox" unique_id=1052172847]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "身  份"
+
+[node name="NavTab_Stats" type="Label" parent="TopBar/TopBarHBox" unique_id=712164984]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "战  绩"
+
+[node name="NavTab_Shop" type="Label" parent="TopBar/TopBarHBox" unique_id=772307978]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "商  城"
+
+[node name="Spacer" type="Control" parent="TopBar/TopBarHBox" unique_id=1587762564]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RankDisplay" type="Label" parent="TopBar/TopBarHBox" unique_id=1621713367]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 12
+text = "无段位 · 0 分"
+
+[node name="AvatarMini" type="PanelContainer" parent="TopBar/TopBarHBox" unique_id=984123558]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="AvatarChar" type="Label" parent="TopBar/TopBarHBox/AvatarMini" unique_id=650434850]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 16
+text = "L"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightMargin" type="Control" parent="TopBar/TopBarHBox" unique_id=862250495]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+
+[node name="Body" type="HBoxContainer" parent="." unique_id=440096089]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="LeftColumn" type="PanelContainer" parent="Body" unique_id=1484203629]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+
+[node name="LeftInner" type="MarginContainer" parent="Body/LeftColumn" unique_id=1740072074]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 32
+
+[node name="LeftVBox" type="VBoxContainer" parent="Body/LeftColumn/LeftInner" unique_id=73458493]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SectionLabel_Mode" type="Label" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=1030995704]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "·  对  战  模  式  ·"
+
+[node name="Spacer1" type="Control" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=58794547]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="ModeItem_Practice" type="Button" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=341575846]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 15
+text = "人机练习
+1 玩家 · 3 AI · 不计分"
+flat = true
+alignment = 0
+
+[node name="ModeItem_Ranked" type="Button" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=560088227]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 15
+text = "快速匹配
+4 人排位 · 记录战绩"
+flat = true
+alignment = 0
+
+[node name="ModeItem_Custom" type="Button" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=2453926]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 15
+text = "自定义
+邀请好友 · 自由规则"
+flat = true
+alignment = 0
+
+[node name="Spacer2" type="Control" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=1748668652]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="SectionLabel_Difficulty" type="Label" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=1140061880]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "·  难  度  选  择  ·"
+
+[node name="Spacer3" type="Control" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=2140408657]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="DiffItem_Easy" type="Button" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=16436230]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "新手
+推荐新玩家体验"
+flat = true
+alignment = 0
+
+[node name="DiffItem_Normal" type="Button" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=1105326369]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 14
+text = "平衡
+1 新手 + 1 老将 + 1 困难"
+flat = true
+alignment = 0
+
+[node name="DiffItem_Hard" type="Button" parent="Body/LeftColumn/LeftInner/LeftVBox" unique_id=798843468]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "挑战
+3 名高段位 AI"
+flat = true
+alignment = 0
+
+[node name="CenterColumn" type="MarginContainer" parent="Body" unique_id=407412714]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 48
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 48
+
+[node name="CenterVBox" type="VBoxContainer" parent="Body/CenterColumn" unique_id=733721371]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderRow" type="HBoxContainer" parent="Body/CenterColumn/CenterVBox" unique_id=1186474859]
+layout_mode = 2
+
+[node name="HeaderLeft" type="VBoxContainer" parent="Body/CenterColumn/CenterVBox/HeaderRow" unique_id=891250064]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RoomTitle" type="Label" parent="Body/CenterColumn/CenterVBox/HeaderRow/HeaderLeft" unique_id=832584869]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 42
+text = "拍 卖 序 厅"
+
+[node name="RoomSubtitle" type="Label" parent="Body/CenterColumn/CenterVBox/HeaderRow/HeaderLeft" unique_id=1795338231]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "AUCTION HALL · 9F · ROOM 034"
+
+[node name="HeaderSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/HeaderRow" unique_id=1236493764]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeaderRight" type="VBoxContainer" parent="Body/CenterColumn/CenterVBox/HeaderRow" unique_id=326421963]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 4
+
+[node name="StatusLabel" type="Label" parent="Body/CenterColumn/CenterVBox/HeaderRow/HeaderRight" unique_id=1772619532]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "房  间  状  态"
+horizontal_alignment = 2
+
+[node name="StatusValue" type="Label" parent="Body/CenterColumn/CenterVBox/HeaderRow/HeaderRight" unique_id=1889191450]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 22
+text = "●  准 备 中"
+horizontal_alignment = 2
+
+[node name="Spacer1" type="Control" parent="Body/CenterColumn/CenterVBox" unique_id=2085559203]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="SeatsRow" type="HBoxContainer" parent="Body/CenterColumn/CenterVBox" unique_id=874884057]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Seat_01" type="PanelContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow" unique_id=1380380920]
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Seat01Inner" type="MarginContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01" unique_id=1758960685]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Seat01VBox" type="VBoxContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner" unique_id=676152703]
+layout_mode = 2
+
+[node name="SeatIdx" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox" unique_id=426991992]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "SEAT · 01"
+
+[node name="AvatarSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox" unique_id=1482116951]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="AvatarContainer" type="CenterContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox" unique_id=1602341781]
+layout_mode = 2
+
+[node name="Avatar" type="PanelContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox/AvatarContainer" unique_id=179422335]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="AvatarChar" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox/AvatarContainer/Avatar" unique_id=944250481]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 28
+text = "L"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox" unique_id=1456322323]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="SeatName" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox" unique_id=1302703322]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "LosAngelous"
+horizontal_alignment = 1
+
+[node name="SeatRank" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox" unique_id=350916482]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "无段位  · 0"
+horizontal_alignment = 1
+
+[node name="BottomSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox" unique_id=557297553]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SeatReady" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_01/Seat01Inner/Seat01VBox" unique_id=1914545572]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.498, 0.651, 0.498, 1)
+theme_override_font_sizes/font_size = 10
+text = "●  已 就 绪"
+horizontal_alignment = 1
+
+[node name="Seat_02" type="PanelContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow" unique_id=1225025523]
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Seat02Inner" type="MarginContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02" unique_id=445318801]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Seat02VBox" type="VBoxContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner" unique_id=2087955756]
+layout_mode = 2
+
+[node name="SeatIdx" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox" unique_id=482123746]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "SEAT · 02"
+
+[node name="AvatarSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox" unique_id=119163101]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="AvatarContainer" type="CenterContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox" unique_id=1505549627]
+layout_mode = 2
+
+[node name="Avatar" type="PanelContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox/AvatarContainer" unique_id=1817206117]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="AvatarChar" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox/AvatarContainer/Avatar" unique_id=315580271]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 28
+text = "汤"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox" unique_id=1059802641]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="SeatName" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox" unique_id=1435970767]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "新手 Tom"
+horizontal_alignment = 1
+
+[node name="SeatRank" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox" unique_id=1295955529]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "AI · 新手"
+horizontal_alignment = 1
+
+[node name="BottomSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox" unique_id=1487348577]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SeatReady" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_02/Seat02Inner/Seat02VBox" unique_id=1730005034]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "○  等 待 开 始"
+horizontal_alignment = 1
+
+[node name="Seat_03" type="PanelContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow" unique_id=1148613133]
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Seat03Inner" type="MarginContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03" unique_id=230375118]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Seat03VBox" type="VBoxContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner" unique_id=907614927]
+layout_mode = 2
+
+[node name="SeatIdx" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox" unique_id=1452665200]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "SEAT · 03"
+
+[node name="AvatarSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox" unique_id=81610361]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="AvatarContainer" type="CenterContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox" unique_id=1771462796]
+layout_mode = 2
+
+[node name="Avatar" type="PanelContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox/AvatarContainer" unique_id=293515625]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="AvatarChar" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox/AvatarContainer/Avatar" unique_id=2096585537]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 28
+text = "博"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox" unique_id=227142644]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="SeatName" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox" unique_id=981354543]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "老将 Bob"
+horizontal_alignment = 1
+
+[node name="SeatRank" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox" unique_id=247384934]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "AI · 老将"
+horizontal_alignment = 1
+
+[node name="BottomSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox" unique_id=1128376292]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SeatReady" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_03/Seat03Inner/Seat03VBox" unique_id=1415026352]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "○  等 待 开 始"
+horizontal_alignment = 1
+
+[node name="Seat_04" type="PanelContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow" unique_id=90049958]
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Seat04Inner" type="MarginContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04" unique_id=1677353438]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Seat04VBox" type="VBoxContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner" unique_id=704494405]
+layout_mode = 2
+
+[node name="SeatIdx" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox" unique_id=1758934991]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "SEAT · 04"
+
+[node name="AvatarSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox" unique_id=217749413]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="AvatarContainer" type="CenterContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox" unique_id=1635075007]
+layout_mode = 2
+
+[node name="Avatar" type="PanelContainer" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox/AvatarContainer" unique_id=1958990230]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="AvatarChar" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox/AvatarContainer/Avatar" unique_id=1526131521]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 28
+text = "卓"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox" unique_id=1499788449]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="SeatName" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox" unique_id=22466423]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "赌王 Alex"
+horizontal_alignment = 1
+
+[node name="SeatRank" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox" unique_id=816612052]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "AI · 困难"
+horizontal_alignment = 1
+
+[node name="BottomSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox" unique_id=992108034]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SeatReady" type="Label" parent="Body/CenterColumn/CenterVBox/SeatsRow/Seat_04/Seat04Inner/Seat04VBox" unique_id=24969930]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "○  等 待 开 始"
+horizontal_alignment = 1
+
+[node name="Spacer3" type="Control" parent="Body/CenterColumn/CenterVBox" unique_id=909562764]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="RulesBox" type="PanelContainer" parent="Body/CenterColumn/CenterVBox" unique_id=259217038]
+layout_mode = 2
+
+[node name="RulesInner" type="MarginContainer" parent="Body/CenterColumn/CenterVBox/RulesBox" unique_id=66408565]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="RulesVBox" type="VBoxContainer" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner" unique_id=589296081]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="RulesTitle" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox" unique_id=528761087]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 14
+text = "本  局  规  则"
+
+[node name="RulesGrid" type="GridContainer" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox" unique_id=574727322]
+layout_mode = 2
+theme_override_constants/h_separation = 24
+columns = 4
+
+[node name="Rule1_Value" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox/RulesGrid" unique_id=1710295649]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 24
+text = "10"
+horizontal_alignment = 1
+
+[node name="Rule2_Value" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox/RulesGrid" unique_id=1722201115]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 24
+text = "2.0→1.0"
+horizontal_alignment = 1
+
+[node name="Rule3_Value" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox/RulesGrid" unique_id=749169023]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 24
+text = "∞"
+horizontal_alignment = 1
+
+[node name="Rule4_Value" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox/RulesGrid" unique_id=941628432]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 24
+text = "±30"
+horizontal_alignment = 1
+
+[node name="Rule1_Label" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox/RulesGrid" unique_id=447140541]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "最多回合"
+horizontal_alignment = 1
+
+[node name="Rule2_Label" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox/RulesGrid" unique_id=1774876768]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "倍率递减"
+horizontal_alignment = 1
+
+[node name="Rule3_Label" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox/RulesGrid" unique_id=1493046806]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "金币无限"
+horizontal_alignment = 1
+
+[node name="Rule4_Label" type="Label" parent="Body/CenterColumn/CenterVBox/RulesBox/RulesInner/RulesVBox/RulesGrid" unique_id=937187038]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "单局最大分变"
+horizontal_alignment = 1
+
+[node name="ActionBarSpacer" type="Control" parent="Body/CenterColumn/CenterVBox" unique_id=2047327635]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ActionBar" type="HBoxContainer" parent="Body/CenterColumn/CenterVBox" unique_id=51727121]
+layout_mode = 2
+
+[node name="ActionSpacer" type="Control" parent="Body/CenterColumn/CenterVBox/ActionBar" unique_id=312049143]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BackButton" type="Button" parent="Body/CenterColumn/CenterVBox/ActionBar" unique_id=1008968006]
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 13
+text = "返 回 主 菜 单"
+flat = true
+
+[node name="ReadyButton" type="Button" parent="Body/CenterColumn/CenterVBox/ActionBar" unique_id=2017338147]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 14
+text = "准 备 就 绪"
+flat = true
+
+[node name="RightColumn" type="PanelContainer" parent="Body" unique_id=689337626]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+
+[node name="RightInner" type="VBoxContainer" parent="Body/RightColumn" unique_id=1599900839]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="RightTabs" type="HBoxContainer" parent="Body/RightColumn/RightInner" unique_id=591930491]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="Tab_Activity" type="Label" parent="Body/RightColumn/RightInner/RightTabs" unique_id=133726924]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "动  态"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Tab_Friends" type="Label" parent="Body/RightColumn/RightInner/RightTabs" unique_id=1962447974]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "好  友"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Tab_Notice" type="Label" parent="Body/RightColumn/RightInner/RightTabs" unique_id=724488237]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "公  告"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ActivityList" type="ScrollContainer" parent="Body/RightColumn/RightInner" unique_id=828198532]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ActivityInner" type="MarginContainer" parent="Body/RightColumn/RightInner/ActivityList" unique_id=1580465106]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="ActivityVBox" type="VBoxContainer" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner" unique_id=1958896065]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Item1_Time" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=1175833926]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "14 : 32"
+
+[node name="Item1_Msg" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=1334108792]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 12
+text = "慕容九  在一场极难对局中，
+估值误差仅  +0.8%"
+autowrap_mode = 2
+
+[node name="Item2_Time" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=1159777226]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "14 : 20"
+
+[node name="Item2_Msg" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=1451062745]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 12
+text = "楚怀瑾  晋级至黄金 III"
+autowrap_mode = 2
+
+[node name="Item3_Time" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=577487980]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "14 : 12"
+
+[node name="Item3_Msg" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=1935513239]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 12
+text = "服务器公告: 新赛季将于
+68 天后开启"
+autowrap_mode = 2
+
+[node name="Item4_Time" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=1030434068]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "14 : 05"
+
+[node name="Item4_Msg" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=778864704]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 12
+text = "沈疏影  以 +12 分结束连败"
+autowrap_mode = 2
+
+[node name="Item5_Time" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=2065679528]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "13 : 58"
+
+[node name="Item5_Msg" type="Label" parent="Body/RightColumn/RightInner/ActivityList/ActivityInner/ActivityVBox" unique_id=409564581]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 12
+text = "本周榜单第一: 云归客
+平均偏差 3.2%"
+autowrap_mode = 2
