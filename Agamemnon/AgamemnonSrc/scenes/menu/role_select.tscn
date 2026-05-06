@@ -1,0 +1,293 @@
+[gd_scene format=3 uid="uid://dsqseenaptr7b"]
+
+[node name="RoleSelect" type="Control" unique_id=1233128790]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="." unique_id=862932704]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.149, 0.149, 0.188, 1)
+
+[node name="BackgroundDecor" type="Control" parent="." unique_id=803257486]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopBar" type="Control" parent="." unique_id=1475810438]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 78.0
+grow_horizontal = 2
+
+[node name="StepBar" type="HBoxContainer" parent="TopBar" unique_id=957307150]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 48.0
+offset_top = -16.0
+offset_right = 620.0
+offset_bottom = 16.0
+grow_vertical = 2
+theme_override_constants/separation = 14
+
+[node name="StepLobby" type="Label" parent="TopBar/StepBar" unique_id=1638572718]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 12
+text = "Ⅰ 组队 ✓"
+vertical_alignment = 1
+
+[node name="Sep1" type="Label" parent="TopBar/StepBar" unique_id=1546118923]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "————"
+vertical_alignment = 1
+
+[node name="StepRole" type="Label" parent="TopBar/StepBar" unique_id=797372369]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 12
+text = "Ⅱ 身份选择"
+vertical_alignment = 1
+
+[node name="Sep2" type="Label" parent="TopBar/StepBar" unique_id=579498791]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "————"
+vertical_alignment = 1
+
+[node name="StepTalent" type="Label" parent="TopBar/StepBar" unique_id=516305431]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "Ⅲ 天赋"
+vertical_alignment = 1
+
+[node name="TopTitle" type="Label" parent="TopBar" unique_id=1653944321]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -18.0
+offset_right = 180.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 18
+text = "◆  身 份 选 择  ◆"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CountdownBox" type="VBoxContainer" parent="TopBar" unique_id=1841381544]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -20.0
+offset_right = -48.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="CountdownLabel" type="Label" parent="TopBar/CountdownBox" unique_id=611706725]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "REMAINING"
+horizontal_alignment = 2
+
+[node name="CountdownValue" type="Label" parent="TopBar/CountdownBox" unique_id=1131727696]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 24
+text = "28"
+horizontal_alignment = 2
+
+[node name="Body" type="HBoxContainer" parent="." unique_id=909940534]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 78.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="RoleArea" type="MarginContainer" parent="Body" unique_id=1454803765]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 48
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 56
+
+[node name="RoleVBox" type="VBoxContainer" parent="Body/RoleArea" unique_id=534110627]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Header" type="VBoxContainer" parent="Body/RoleArea/RoleVBox" unique_id=1715943181]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Body/RoleArea/RoleVBox/Header" unique_id=760907265]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 34
+text = "选 择 你 的 入 场 身 份"
+
+[node name="Subtitle" type="Label" parent="Body/RoleArea/RoleVBox/Header" unique_id=1814909502]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "身份决定你的情报获取方式。不同身份代表不同的估值节奏。"
+
+[node name="FilterRow" type="HBoxContainer" parent="Body/RoleArea/RoleVBox" unique_id=717768645]
+layout_mode = 2
+theme_override_constants/separation = 28
+
+[node name="FilterAll" type="Label" parent="Body/RoleArea/RoleVBox/FilterRow" unique_id=44238993]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 12
+text = "全部"
+
+[node name="FilterIntel" type="Label" parent="Body/RoleArea/RoleVBox/FilterRow" unique_id=402843973]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "情报"
+
+[node name="FilterScope" type="Label" parent="Body/RoleArea/RoleVBox/FilterRow" unique_id=1100651713]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "范围"
+
+[node name="FilterTrick" type="Label" parent="Body/RoleArea/RoleVBox/FilterRow" unique_id=1151760722]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "心理"
+
+[node name="RoleGrid" type="GridContainer" parent="Body/RoleArea/RoleVBox" unique_id=900193005]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 18
+theme_override_constants/v_separation = 18
+columns = 3
+
+[node name="DetailPanel" type="PanelContainer" parent="Body" unique_id=271052495]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+
+[node name="DetailInner" type="MarginContainer" parent="Body/DetailPanel" unique_id=647930267]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 48
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 48
+
+[node name="DetailVBox" type="VBoxContainer" parent="Body/DetailPanel/DetailInner" unique_id=809465106]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="PortraitBox" type="CenterContainer" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=49843675]
+layout_mode = 2
+
+[node name="Portrait" type="PanelContainer" parent="Body/DetailPanel/DetailInner/DetailVBox/PortraitBox" unique_id=1929616101]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+
+[node name="PortraitChar" type="Label" parent="Body/DetailPanel/DetailInner/DetailVBox/PortraitBox/Portrait" unique_id=2057265015]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 72
+text = "卜"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RoleName" type="Label" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=1406340619]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 30
+text = "占 卜 师"
+horizontal_alignment = 1
+
+[node name="RoleTitle" type="Label" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=389308466]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 12
+text = "ORACLE · 稳健情报型"
+horizontal_alignment = 1
+
+[node name="Bio" type="Label" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=387975872]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.659, 0.651, 0.631, 1)
+theme_override_font_sizes/font_size = 13
+text = "心有灵犀，目通玄关。
+众物有序，皆在我神识之中。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SkillPassiveTitle" type="Label" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=1406340103]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "PASSIVE · 被 动"
+
+[node name="SkillPassive" type="Label" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=530902131]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "灵识：每回合随机揭示 5 格的品质信息。"
+autowrap_mode = 2
+
+[node name="SkillActiveTitle" type="Label" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=111805904]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.41, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "ACTIVE · 主 动"
+
+[node name="SkillActive" type="Label" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=535547092]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.9, 0.88, 1)
+theme_override_font_sizes/font_size = 14
+text = "天眼：指定任意一格，完全揭示物品名称与精确价值。"
+autowrap_mode = 2
+
+[node name="DetailSpacer" type="Control" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=1621113087]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ConfirmButton" type="Button" parent="Body/DetailPanel/DetailInner/DetailVBox" unique_id=2116129234]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788, 0.663, 0.38, 1)
+theme_override_font_sizes/font_size = 16
+text = "确 认 · 身 份"

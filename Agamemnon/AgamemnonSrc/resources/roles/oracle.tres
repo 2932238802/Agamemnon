@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RoleData" format=3 uid="uid://dc2t5yp3k8h2l"]
+
+[ext_resource type="Script" uid="uid://c3sg1qqon50se" path="res://scripts/model/sc_res_role_data.gd" id="1_kxjoa"]
+
+[resource]
+script = ExtResource("1_kxjoa")
+id = "oracle"
+display_name = "占卜师"
+description = "心有灵犀，目通玄关
+众物有序，皆在我神识之中"
+passive_skill_name = "灵识"
+passive_skill_desc = "每回合开始，随机揭示1~4个物品的品质及其轮廓"
+active_skill_name = "天眼"
+active_skill_desc = "指定仓库任意一格，完全揭示其物品"
+active_skill_cooldowntime = 3
+metadata/_custom_type_script = "uid://c3sg1qqon50se"
